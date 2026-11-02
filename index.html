@@ -3,11 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>USJ dnes – mapa parku, WC, jedlo</title>
-<meta name="description" content="Orientačná mapa Universal Studios Japan + tipy – 2. 11. 2026">
+<title>USJ dnes – OSM mapa, WC, jedlo</title>
+<meta name="description" content="Leaflet/OSM mapa Universal Studios Japan – 2. 11. 2026">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 <style>
 :root {
   --bg:#0c1017; --bg2:#121826; --card:#161d2b; --card2:#1c2536;
@@ -30,11 +33,7 @@ body::before{
 .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 0 72px}
 .hero{position:relative;min-height:280px;max-height:400px;overflow:hidden;border-bottom:1px solid var(--line)}
 .hero img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.7) saturate(1.05);min-height:280px}
-.hero-overlay{
-  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
-  padding:22px 18px 18px;
-  background:linear-gradient(180deg,rgba(12,16,23,.2),rgba(12,16,23,.92));
-}
+.hero-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:22px 18px 18px;background:linear-gradient(180deg,rgba(12,16,23,.2),rgba(12,16,23,.92))}
 .kicker{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-weight:600;margin:0 0 8px}
 .hero h1{font-family:var(--font-display);font-size:clamp(1.55rem,5.8vw,2.2rem);line-height:1.1;letter-spacing:-.03em;margin:0 0 8px;text-wrap:balance}
 .hero .sub{color:#d6cdb8;margin:0;font-size:.93rem;max-width:36ch}
@@ -46,50 +45,36 @@ h2{font-family:var(--font-display);font-size:1.3rem;font-weight:650;margin:26px 
 ol.postup{margin:0;padding-left:1.15rem}
 ol.postup li{margin:.5rem 0}
 .hint{color:var(--muted);font-size:.88rem;margin:0 0 10px}
-.official{
-  display:block; text-decoration:none; color:var(--text);
-  background:rgba(224,179,90,.1); border:1px solid rgba(224,179,90,.35);
-  border-radius:14px; padding:12px 14px; margin:0 0 12px;
-}
+.official{display:block;text-decoration:none;color:var(--text);background:rgba(224,179,90,.1);border:1px solid rgba(224,179,90,.35);border-radius:14px;padding:12px 14px;margin:0 0 12px}
 .official strong{color:var(--amber)}
 .official small{display:block;color:var(--muted);margin-top:4px;font-size:.82rem}
-
-/* MAP */
-.map-shell{
-  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-  overflow:hidden; box-shadow:var(--shadow); margin-bottom:10px;
-}
-.map-toolbar{
-  display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between;
-  padding:10px 10px 0;
-}
+.map-shell{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px}
+.map-toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px;align-items:center;justify-content:space-between}
 .filters{display:flex;flex-wrap:wrap;gap:6px}
-.filter,.zoom-btn{
-  border:1px solid var(--line); background:var(--card2); color:var(--text);
-  border-radius:999px; padding:9px 12px; min-height:40px; font:600 .82rem var(--font); cursor:pointer;
-}
-.filter.active{border-color:var(--amber); background:rgba(224,179,90,.14); color:#f5e6c4}
-.zoom-btns{display:flex;gap:6px}
-.map-viewport{
-  position:relative; height:min(68vh,520px); overflow:hidden; touch-action:none;
-  background:#0a1220; cursor:grab; margin-top:8px;
-}
-.map-viewport.grabbing{cursor:grabbing}
-.map-stage{
-  width:100%; height:100%; transform-origin:0 0; will-change:transform;
-}
-.map-stage svg{width:400px; height:520px; display:block; max-width:none}
-.pin{cursor:pointer}
-.pin circle,.pin rect{transition:transform .15s}
-.pin.active .glow{opacity:1}
-.pin .glow{opacity:0; transition:opacity .15s}
-.legend{
-  display:flex; flex-wrap:wrap; gap:10px; padding:8px 12px 12px; color:var(--muted); font-size:.78rem;
-}
-.legend span{display:inline-flex; align-items:center; gap:5px}
+.filter{border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:999px;padding:9px 12px;min-height:40px;font:600 .82rem var(--font);cursor:pointer}
+.filter.active{border-color:var(--amber);background:rgba(224,179,90,.14);color:#f5e6c4}
+#map{height:min(62vh,480px);width:100%;background:#1a2433}
+.legend{display:flex;flex-wrap:wrap;gap:10px;padding:8px 12px 12px;color:var(--muted);font-size:.78rem}
+.legend span{display:inline-flex;align-items:center;gap:5px}
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pin-icon{
+  width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font:700 11px/1 var(--font); border:2px solid #0c1017; box-shadow:0 2px 8px rgba(0,0,0,.45);
+}
+.pin-icon.ride,.pin-icon.show{background:#e0b35a;color:#1a1208}
+.pin-icon.wc{background:#5ec8e0;color:#0a2030;font-size:12px}
+.pin-icon.food{background:#7cbc8a;color:#0a2010;font-size:12px}
+.pin-icon.aid{background:#d26666;color:#fff;font-size:12px}
+.pin-icon.active{outline:2px solid #fff; outline-offset:2px}
+.leaflet-container{font:12px/1.3 var(--font); background:#1a2433}
+.leaflet-popup-content-wrapper{background:#161d2b;color:#f3efe6;border-radius:12px;border:1px solid rgba(232,196,132,.2)}
+.leaflet-popup-tip{background:#161d2b}
+.leaflet-popup-content{margin:10px 12px;font-size:.88rem}
+.leaflet-control-attribution{font-size:9px !important; background:rgba(12,16,23,.75) !important; color:#aaa !important}
+.leaflet-control-attribution a{color:#e0b35a !important}
+.marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{background:rgba(224,179,90,.25)}
+.marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{background:#e0b35a;color:#1a1208;font-weight:700}
 
-/* PANEL */
 #panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow);min-height:70px}
 #panel.empty{padding:20px 16px;color:var(--muted);text-align:center;border-style:dashed}
 #panel .hero-shot{width:100%;height:190px;object-fit:cover;display:block;background:var(--card2);cursor:pointer}
@@ -99,11 +84,9 @@ ol.postup li{margin:.5rem 0}
 #panel .tip{background:rgba(224,179,90,.08);border-left:3px solid var(--amber);padding:10px 12px;margin-top:10px;border-radius:0 10px 10px 0;font-size:.92rem}
 .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .gallery img{width:100%;height:84px;object-fit:cover;border-radius:10px;background:var(--card2);cursor:pointer}
-
-.vomit-badge{display:inline-flex;align-items:center;gap:6px;font-size:1.05rem;line-height:1;vertical-align:middle}
-.vomit-badge .vomit-n{font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.vomit-badge{display:inline-flex;align-items:center;gap:6px;font-size:1.05rem;line-height:1}
+.vomit-badge .vomit-n{font-size:.72rem;font-weight:700;color:var(--muted)}
 .vomit-badge.none{color:var(--muted);font-size:.9rem}
-
 .ride{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow)}
 .ride .cover{width:100%;height:200px;object-fit:cover;display:block;background:var(--card2);cursor:pointer}
 .ride .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:3px}
@@ -130,9 +113,9 @@ a{color:var(--amber)}
   <header class="hero">
     <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=1280" alt="Hogsmeade, USJ" width="1280" height="720">
     <div class="hero-overlay">
-      <p class="kicker">2. 11. 2026 · Osaka · bez Express Passu</p>
-      <h1>USJ dnes — mapa, WC, jedlo, rides</h1>
-      <p class="sub">Orientačná schéma parku. Ťukni na pin. Náročnosť = počet 🤮.</p>
+      <p class="kicker">2. 11. 2026 · Osaka · OpenStreetMap</p>
+      <h1>USJ dnes — živá mapa parku</h1>
+      <p class="sub">OSM dlaždice + markery. Ťukni na pin. Náročnosť = počet 🤮.</p>
       <nav class="toc">
         <a href="#postup">Postup</a>
         <a href="#mapa">Mapa</a>
@@ -147,133 +130,75 @@ a{color:var(--amber)}
     <section id="postup" class="card" style="margin-top:16px">
       <h2 style="margin-top:0">Krátky postup</h2>
       <ol class="postup">
-        <li><strong>Odchod ~11:30</strong> Tsuruhashi → JR Loop → Nishikujō → Yumesaki → Universal City (~35–40 min) → brána ~12:15.</li>
-        <li><strong>Hneď po vstupe:</strong> appka USJ + timed entry Super Nintendo World.</li>
-        <li><strong>Obed</strong> mimo 11:30–13:30 (CityWalk alebo neskôr).</li>
-        <li>Poradie: <strong>HP → Jurassic → JAWS od 18:00</strong> → Hollywood Dream.</li>
-        <li><strong>Zajtra 3. 11.:</strong> checkout Osaka do 11:00.</li>
+        <li><strong>~11:30</strong> Tsuruhashi → JR Loop → Nishikujō → Yumesaki → Universal City (~35–40 min).</li>
+        <li>Hneď po vstupe: appka + <strong>timed entry Nintendo</strong>.</li>
+        <li>Obed mimo 11:30–13:30.</li>
+        <li>Poradie: <strong>HP → Jurassic → JAWS od 18:00</strong> → Dream. WaterWorld podľa appky.</li>
+        <li><strong>Zajtra:</strong> checkout Osaka do 11:00.</li>
       </ol>
     </section>
 
-    <h2 id="mapa">Mapa parku</h2>
-    <p class="hint">Schéma podľa skutočného layoutu (vstup dole = CityWalk). Pinch / +/− zoom. Filtre: atrakcie, WC, jedlo.</p>
+    <h2 id="mapa">Mapa parku (OSM)</h2>
+    <p class="hint">Skutočná mapa s pinch-zoom. Filtre odfiltrujú markery. Žiadna schématická SVG.</p>
     <a class="official" href="https://www.usj.co.jp/web/en/us/service-guide/parkmap" target="_blank" rel="noopener">
       <strong>Oficiálna Park Map (USJ)</strong>
-      <small>PDF: usj.co.jp/pdf/map_studiomap.pdf · živá GPS mapa = oficiálna USJ appka</small>
+      <small>PDF: usj.co.jp/pdf/map_studiomap.pdf · živá GPS navigácia = oficiálna USJ appka</small>
     </a>
 
     <div class="map-shell">
       <div class="map-toolbar">
-        <div class="filters" role="tablist" aria-label="Filter mapy">
+        <div class="filters" role="tablist">
           <button type="button" class="filter active" data-filter="all">Všetko</button>
           <button type="button" class="filter" data-filter="ride">Atrakcie</button>
           <button type="button" class="filter" data-filter="wc">WC</button>
           <button type="button" class="filter" data-filter="food">Jedlo</button>
         </div>
-        <div class="zoom-btns">
-          <button type="button" class="zoom-btn" id="zoom-out" aria-label="Oddialiť">−</button>
-          <button type="button" class="zoom-btn" id="zoom-in" aria-label="Priblížiť">+</button>
-          <button type="button" class="zoom-btn" id="zoom-reset" aria-label="Reset">⟲</button>
-        </div>
       </div>
-      <div class="map-viewport" id="map-viewport" aria-label="Orientačná mapa USJ">
-        <div class="map-stage" id="map-stage">
-          <svg viewBox="0 0 400 520" width="400" height="520" xmlns="http://www.w3.org/2000/svg" role="img">
-            <defs>
-              <filter id="shadow"><feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-opacity=".35"/></filter>
-            </defs>
-            <rect width="400" height="520" fill="#0a1220"/>
-            <!-- Paths / roads hint -->
-            <path d="M200 500 L200 300 L120 220 L160 120 L200 90" fill="none" stroke="#243044" stroke-width="10" stroke-linecap="round"/>
-            <path d="M200 300 L280 240 L320 120" fill="none" stroke="#243044" stroke-width="8" stroke-linecap="round"/>
-            <path d="M120 220 L60 240" fill="none" stroke="#243044" stroke-width="7" stroke-linecap="round"/>
-
-            <!-- Zones (spatial) -->
-            <g font-family="DM Sans,sans-serif" font-size="11" fill="#c9d2e0" opacity=".95">
-              <rect x="130" y="455" width="140" height="50" rx="10" fill="#2a3548" stroke="#5a6a80"/>
-              <text x="200" y="485" text-anchor="middle" font-size="12" fill="#e8e0d0">VSTUP / CityWalk</text>
-
-              <rect x="40" y="350" width="130" height="85" rx="10" fill="#3a2f1c" stroke="#8a7040"/>
-              <text x="105" y="380" text-anchor="middle" fill="#f0d9a8">Hollywood</text>
-              <text x="105" y="396" text-anchor="middle" font-size="10" fill="#c9b080">Dream · Mel’s</text>
-
-              <rect x="185" y="340" width="150" height="70" rx="10" fill="#1f2f3f" stroke="#4a708a"/>
-              <text x="260" y="380" text-anchor="middle" fill="#b8d4e8">New York</text>
-
-              <rect x="25" y="230" width="110" height="100" rx="10" fill="#163a42" stroke="#3a7a88"/>
-              <text x="80" y="265" text-anchor="middle" fill="#9fd4dc">Amity</text>
-              <text x="80" y="280" text-anchor="middle" font-size="10" fill="#7ab0b8">JAWS</text>
-
-              <rect x="20" y="175" width="70" height="50" rx="10" fill="#3a2a18" stroke="#8a6040"/>
-              <text x="55" y="205" text-anchor="middle" font-size="10" fill="#e8c8a8">WaterWorld</text>
-
-              <rect x="95" y="115" width="120" height="100" rx="10" fill="#243a1c" stroke="#6a8a40"/>
-              <text x="155" y="145" text-anchor="middle" fill="#d0e8a8">Jurassic Park</text>
-
-              <rect x="230" y="185" width="120" height="90" rx="10" fill="#2a1f3a" stroke="#6a4a8a"/>
-              <text x="290" y="230" text-anchor="middle" fill="#d8c8f0">Minion Park</text>
-
-              <rect x="105" y="35" width="140" height="85" rx="10" fill="#1a2740" stroke="#5a7aaa"/>
-              <text x="175" y="65" text-anchor="middle" fill="#c8daf0">Wizarding World</text>
-              <text x="175" y="80" text-anchor="middle" font-size="10" fill="#8ab0d8">HP · Hogsmeade</text>
-
-              <rect x="270" y="35" width="110" height="95" rx="10" fill="#3a1a1a" stroke="#8a4040"/>
-              <text x="325" y="80" text-anchor="middle" fill="#f0c0c0">Nintendo</text>
-              <text x="325" y="96" text-anchor="middle" font-size="10" fill="#d09090">timed entry</text>
-
-              <text x="20" y="28" fill="#6a7588" font-size="10">S ↑ sever (HP / Nintendo)</text>
-              <text x="20" y="515" fill="#6a7588" font-size="10">↓ juh · vstup</text>
-            </g>
-
-            <g id="pins"></g>
-          </svg>
-        </div>
-      </div>
+      <div id="map" role="region" aria-label="OpenStreetMap USJ"></div>
       <div class="legend">
-        <span><i class="dot" style="background:#e0b35a"></i>Atrakcie</span>
+        <span><i class="dot" style="background:#e0b35a"></i>Atrakcie / shows (W = WaterWorld)</span>
         <span><i class="dot" style="background:#5ec8e0"></i>WC</span>
         <span><i class="dot" style="background:#7cbc8a"></i>Jedlo</span>
         <span><i class="dot" style="background:#d26666"></i>First Aid</span>
-        <span>12 pinov atrakcií · 7 WC · 5 jedlo · 1 aid</span>
+        <span id="marker-count"></span>
       </div>
     </div>
 
-    <div id="panel" class="empty" aria-live="polite">Ťukni na pin na mape (atrakcia, WC alebo jedlo).</div>
+    <div id="panel" class="empty" aria-live="polite">Ťukni na marker na mape.</div>
 
-    <h2 id="atrakcie">Atrakcie <small style="font-weight:500;color:var(--muted);font-family:var(--font);font-size:.85rem">náročnosť = 🤮</small></h2>
+    <h2 id="atrakcie">Atrakcie <small style="font-weight:500;color:var(--muted);font-family:var(--font);font-size:.85rem">🤮 rating</small></h2>
     <div id="rides"></div>
 
     <div class="note">
-      <strong>Back to the Future už nie je.</strong> BTTF skončil v <strong>máji 2016</strong> → <strong>Minion Mayhem</strong>.
+      <strong>Back to the Future už nie je</strong> (máj 2016) → <strong>Minion Mayhem</strong>.
       <p style="margin:10px 0 0"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Back_to_the_Future_The_Ride_in_Universal_Studios_Japan.jpg?width=800" alt="BTTF historická" loading="lazy" class="lb" style="width:100%;border-radius:12px;max-height:220px;object-fit:cover;cursor:pointer"></p>
     </div>
 
     <h2 id="shows">Shows</h2>
     <div class="card">
       <ul class="tips">
-        <li><strong>Wizarding World:</strong> Triwizard Spirit Rally, Frog Choir, Hippogriff Magical Lesson — časy v appke.</li>
-        <li><strong>WaterWorld:</strong> vodná show (ak beží podľa rozvrhu).</li>
-        <li><strong>Halloween Horror Nights:</strong> scare zóny večer — kto nechce spook, obíď v appke.</li>
+        <li><strong>WaterWorld (W na mape):</strong> veľká vodná show na západe — časy v USJ appke.</li>
+        <li><strong>Wizarding World:</strong> Triwizard Spirit Rally, Frog Choir, Hippogriff Magical Lesson.</li>
+        <li><strong>Halloween Horror Nights:</strong> scare zóny večer — obíď v appke, ak nechceš spook.</li>
       </ul>
     </div>
 
     <h2 id="tipy">Tipy bez Express Passu</h2>
     <div class="card">
       <ul class="tips">
-        <li>Jeden telefón = jedna skupina (Nintendo slot).</li>
-        <li>Timed entry Nintendo hneď za bránou; inak lotéria ≥1 h vopred (do 19:00).</li>
-        <li>Rady v appke; Single Rider ak je.</li>
-        <li>Pršiplášť: dážď + JP Ride + JAWS.</li>
+        <li>Jeden telefón = Nintendo slot pre skupinu.</li>
+        <li>Timed entry hneď za bránou; inak lotéria ≥1 h vopred.</li>
         <li><strong>JAWS dnes od 18:00</strong> (Red Alert).</li>
+        <li>Pršiplášť: JP Ride + JAWS + WaterWorld predné rady.</li>
         <li><strong>Zajtra checkout do 11:00.</strong></li>
       </ul>
     </div>
   </div>
 
   <footer>
-    Orientačná schéma (nie oficiálny floorplan). Oficiálna mapa: <a href="https://www.usj.co.jp/web/en/us/service-guide/parkmap">USJ Park Map</a>.<br>
-    Fotky Wikimedia · výšky USJ · vomit rating je vtipné hodnotenie žalúdka, nie oficiálne.<br>
-    33 foto URL · 7 WC · 5 jedlo pinov.
+    Mapa © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Leaflet.<br>
+    Markery: Nominatim/OSM + Wikimedia coords. Oficiálna navigácia: USJ app.<br>
+    Vomit rating je vtipné hodnotenie žalúdka. 33 Wikimedia fotiek.
   </footer>
 </div>
 
@@ -282,119 +207,153 @@ a{color:var(--amber)}
   <img alt="">
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 const PLACES = [{"id": "entrance", "num": "E", "name": "Vstup / CityWalk", "zone": "Entrance", "diff": "—", "diffClass": "d-none", "height": "—", "dur": "—", "desc": "Brána USJ a CityWalk pred vstupom. Od stanice Universal City asi 5 min pešo. Tu sa oplatí obed pred špičkou alebo rýchly snack.", "tip": "Pred vstupom otvor appku USJ a priprav Studio Passy. Obed mimo 11:30–13:30 špičky — CityWalk je pohodlný.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/UNIVERSAL_STUDIOS_JAPAN_ENTRANCE.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/USJ_Entrance_-_2020-01-01.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/UNIVERSAL_STUDIOS_JAPAN_GATE.jpg?width=800"], "emoji": "🚪", "short": "Vstup", "tone": "#3d4a5c", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/UNIVERSAL_STUDIOS_JAPAN_ENTRANCE.jpg?width=800", "vomit": null, "vomitHtml": "<span class=\"vomit-none\">—</span>"}, {"id": "forbidden", "num": "1", "name": "Forbidden Journey", "zone": "Wizarding World", "diff": "4/5", "diffClass": "v4", "height": "122 cm+", "dur": "~5 min", "desc": "Hlavná jazda v Rokforte: kreslo sa točí a „letí“ s Harrym — drak, dementori, 360° obraz. Silné na žalúdok.", "tip": "Choďte sem hneď po vstupe. Skrinky povinné. Najlepší „wow“ moment HP zóny.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Hogwarts_School_of_Witchcraft_and_Wizardry_in_Universal_Studios_Japan.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_USJ.JPG?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_by_night_USJ.JPG?width=800"], "emoji": "🏰", "short": "Forbidden", "tone": "#2a4a7a", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Hogwarts_School_of_Witchcraft_and_Wizardry_in_Universal_Studios_Japan.jpg?width=800", "vomit": 4, "vomitHtml": "🤮🤮🤮🤮"}, {"id": "hippogriff", "num": "2", "name": "Flight of the Hippogriff", "zone": "Wizarding World", "diff": "2/5", "diffClass": "v2", "height": "122 cm (92 cm so sprievodom)", "dur": "~2 min", "desc": "Krátka rodinná horská dráha okolo Hagridovej chalúpky. Prudké zákruty, ale mierna.", "tip": "Dobrý warm-up pred Forbidden Journey. Skrinky tu nie sú.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ_2024.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ.JPG?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Hagrid%27s_Hut_at_Universal_Studios_Japan.jpg?width=800"], "emoji": "🦅", "short": "Hippogriff", "tone": "#2a4a7a", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ_2024.jpg?width=800", "vomit": 2, "vomitHtml": "🤮🤮"}, {"id": "hogsmeade", "num": "3", "name": "Hogsmeade · Butterbeer · Ollivanders", "zone": "Wizarding World", "diff": "—", "diffClass": "d-none", "height": "—", "dur": "voľné", "desc": "Dedinka Hogsmeade, Castle Walk v Rokforte, Ollivanders (scénka s prútikom), Butterbeer a obchody.", "tip": "Butterbeer (klasický alebo mrazený). Castle Walk bez jazdy. Ollivanders — rad sa hýbe.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_2.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter_-_Ollivanders_USJ.JPG?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter10_USJ.JPG?width=800"], "emoji": "🍺", "short": "Hogsmeade", "tone": "#2a4a7a", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=800", "vomit": null, "vomitHtml": "<span class=\"vomit-none\">—</span>"}, {"id": "flying", "num": "4", "name": "The Flying Dinosaur", "zone": "Jurassic Park", "diff": "5/5", "diffClass": "v5", "height": "132–198 cm", "dur": "~3 min", "desc": "Visíš tvárou k zemi pod pteranodonom, 360° otočky. Najdivokejšia horská dráha v USJ.", "tip": "Detektor kovov + skrinky. Len pre silné žalúdky. Blízko JP Ride.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_3.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Entrance_of_The_Flying_Dinosaur.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_1.jpg?width=800"], "emoji": "🦖", "short": "Flying Dino", "tone": "#3a5a28", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_3.jpg?width=800", "vomit": 5, "vomitHtml": "🤮🤮🤮🤮🤮"}, {"id": "jpride", "num": "5", "name": "Jurassic Park – The Ride", "zone": "Jurassic Park", "diff": "4/5", "diffClass": "v4", "height": "122 cm (107 cm so sprievodom)", "dur": "~7 min", "desc": "Loď cez džungľu a pád z ~26 m pred T-Rexom. Do 8. 11. niekedy verzia In the Dark. Zmoknete.", "tip": "Pršiplášť. Spojte s Flying Dinosaur — sú vedľa seba.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_(Universal_Studios_Japan).jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_at_Universal_Studios_Japan_5.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_(Universal_Studios_Japan).jpg?width=800"], "emoji": "🌊", "short": "JP Ride", "tone": "#3a5a28", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_(Universal_Studios_Japan).jpg?width=800", "vomit": 4, "vomitHtml": "🤮🤮🤮🤮"}, {"id": "jaws", "num": "6", "name": "JAWS · Red Alert", "zone": "Amity Village", "diff": "3/5", "diffClass": "v3", "height": "— (rodinná)", "dur": "~7 min", "desc": "Loď so žralokom v Amity. Dnes od 18:00 výročná Red Alert: stmavená, hmla, červená voda. Trochu mokrá.", "tip": "Nechajte na večer po 18:00. Overte v appke, či už jazdí.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_03.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_07.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Amity_village_-_panoramio.jpg?width=800"], "emoji": "🦈", "short": "JAWS", "tone": "#1e4a5c", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_03.jpg?width=800", "vomit": 3, "vomitHtml": "🤮🤮🤮"}, {"id": "dream", "num": "7", "name": "Hollywood Dream (+ Backdrop)", "zone": "Hollywood", "diff": "5/5", "diffClass": "v5", "height": "132 cm+", "dur": "~3 min", "desc": "Rýchla horská dráha s hudbou v sedadle. Backdrop ide dozadu — ešte náročnejšia.", "tip": "Večer pred zatvorením kratšie rady. Backdrop až po klasickom Dream.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_The_Ride.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Helix_of_Hollywood_Dream_%E2%80%93_The_Ride.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_%E2%80%93_The_Ride_01.jpg?width=800"], "emoji": "🎢", "short": "Dream", "tone": "#5a4020", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_The_Ride.jpg?width=800", "vomit": 5, "vomitHtml": "🤮🤮🤮🤮🤮"}, {"id": "minion", "num": "8", "name": "Minion Mayhem", "zone": "Minion Park", "diff": "3/5", "diffClass": "v3", "height": "podľa USJ (simulátor)", "dur": "~5 min", "desc": "Simulátor s Minionmi — nástupca Back to the Future (BTTF skončil máj 2016). Zábavné, nie extrémne.", "tip": "Dobrá pauza medzi horskými dráhami. Minion Park je fajný na fotky.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Despicable_Me_Minion_Mayhem_(Universal_Studios_Japan).jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Minion_Park_at_Universal_Studios_Japan.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Minion_Park_at_night.jpg?width=800"], "emoji": "🟡", "short": "Minion", "tone": "#4a3a6a", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Despicable_Me_Minion_Mayhem_(Universal_Studios_Japan).jpg?width=800", "vomit": 3, "vomitHtml": "🤮🤮🤮"}, {"id": "nintendo", "num": "N", "name": "Super Nintendo World", "zone": "Nintendo", "diff": "—", "diffClass": "d-none", "height": "podľa atrakcie", "dur": "časový slot", "desc": "Mario Kart, Donkey Kong a zóna. Bez Express Passu so vstupom do Nintendo len s časovým lístkom z appky (alebo lotéria).", "tip": "Hneď za bránou skús timed entry. Jeden telefón = celá skupina. Ak nie je → Standby Entry lotéria (≥1 h vopred, do 19:00).", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/Super_Nintendo_World_Entrance_5th_Anniversary_decoration_at_Universal_Studios_Japan.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Kinopio%27s_cafe_exterior_at_Super_Nintendo_World_(Universal_Studios_Japan).png?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Power_up_bands_at_Super_Nintendo_World_(Universal_Studios_Japan).png?width=800"], "emoji": "🍄", "short": "Nintendo", "tone": "#6a2830", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Super_Nintendo_World_Entrance_5th_Anniversary_decoration_at_Universal_Studios_Japan.jpg?width=800", "vomit": null, "vomitHtml": "<span class=\"vomit-none\">—</span>"}, {"id": "shows", "num": "S", "name": "Shows & Horror Nights", "zone": "Park-wide", "diff": "—", "diffClass": "d-none", "height": "—", "dur": "podľa appky", "desc": "HP: Triwizard Spirit Rally, Frog Choir, Hippogriff Magical Lesson. WaterWorld (ak beží). Večer Halloween Horror Nights — zóny so scare actors.", "tip": "Časy show vždy v appke. Horror Nights: kto sa nechce báť, obíď označené zóny v appke.", "photos": ["https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter3_USJ.JPG?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=800", "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_by_night_USJ.JPG?width=800"], "emoji": "🎭", "short": "Shows", "tone": "#4a3a20", "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter3_USJ.JPG?width=800", "vomit": null, "vomitHtml": "<span class=\"vomit-none\">—</span>"}];
-const PINS = [{"id": "entrance", "kind": "ride", "num": "E", "x": 200, "y": 480, "label": "Vstup", "place": "entrance"}, {"id": "dream", "kind": "ride", "num": "7", "x": 95, "y": 390, "label": "Dream", "place": "dream"}, {"id": "shows-ny", "kind": "show", "num": "S", "x": 230, "y": 370, "label": "Shows", "place": "shows"}, {"id": "jaws", "kind": "ride", "num": "6", "x": 70, "y": 270, "label": "JAWS", "place": "jaws"}, {"id": "waterworld", "kind": "show", "num": "W", "x": 55, "y": 210, "label": "WaterWorld", "place": "shows"}, {"id": "flying", "kind": "ride", "num": "4", "x": 115, "y": 145, "label": "Flying Dino", "place": "flying"}, {"id": "jpride", "kind": "ride", "num": "5", "x": 165, "y": 175, "label": "JP Ride", "place": "jpride"}, {"id": "minion", "kind": "ride", "num": "8", "x": 285, "y": 230, "label": "Minion", "place": "minion"}, {"id": "forbidden", "kind": "ride", "num": "1", "x": 175, "y": 70, "label": "Forbidden", "place": "forbidden"}, {"id": "hippogriff", "kind": "ride", "num": "2", "x": 130, "y": 95, "label": "Hippogriff", "place": "hippogriff"}, {"id": "hogsmeade", "kind": "ride", "num": "3", "x": 210, "y": 100, "label": "Hogsmeade", "place": "hogsmeade"}, {"id": "nintendo", "kind": "ride", "num": "N", "x": 320, "y": 80, "label": "Nintendo", "place": "nintendo"}, {"id": "wc1", "kind": "wc", "num": "🚻", "x": 175, "y": 455, "label": "WC vstup", "place": null}, {"id": "wc2", "kind": "wc", "num": "🚻", "x": 200, "y": 55, "label": "WC HP", "place": null}, {"id": "wc3", "kind": "wc", "num": "🚻", "x": 140, "y": 200, "label": "WC Jurassic", "place": null}, {"id": "wc4", "kind": "wc", "num": "🚻", "x": 95, "y": 295, "label": "WC Amity", "place": null}, {"id": "wc5", "kind": "wc", "num": "🚻", "x": 300, "y": 250, "label": "WC Minion", "place": null}, {"id": "wc6", "kind": "wc", "num": "🚻", "x": 335, "y": 110, "label": "WC Nintendo", "place": null}, {"id": "wc7", "kind": "wc", "num": "🚻", "x": 120, "y": 375, "label": "WC Hollywood", "place": null}, {"id": "food-broom", "kind": "food", "num": "🍽", "x": 195, "y": 85, "label": "Three Broomsticks", "place": "hogsmeade", "tip": "Three Broomsticks v Hogsmeade — klasické HP jedlo + Butterbeer vedľa."}, {"id": "food-amity", "kind": "food", "num": "🍽", "x": 85, "y": 250, "label": "Amity Landing", "place": "jaws", "tip": "Amity / Boardwalk snacks pri JAWS — rýchle občerstvenie pred večerným Red Alert."}, {"id": "food-jp", "kind": "food", "num": "🍽", "x": 145, "y": 155, "label": "Jurassic snacks", "place": "jpride", "tip": "Občerstvenie v Jurassic Park zóne — hodí sa medzi Flying Dino a JP Ride."}, {"id": "food-mels", "kind": "food", "num": "🍽", "x": 110, "y": 410, "label": "Mel’s / Hollywood", "place": "dream", "tip": "Hollywood občerstvenie (Mel’s a okolie) — blízko Dream a vstupu."}, {"id": "food-city", "kind": "food", "num": "🍽", "x": 250, "y": 495, "label": "CityWalk", "place": "entrance", "tip": "CityWalk pred bránou — obed mimo 11:30–13:30 špičky vnútri parku."}, {"id": "aid", "kind": "aid", "num": "✚", "x": 155, "y": 430, "label": "First Aid", "place": null, "tip": "First Aid blízko vstupu / Hollywood — v appke USJ over aktuálnu polohu."}];
+const MARKERS = [{"id": "entrance", "kind": "ride", "place": "entrance", "num": "E", "label": "Vstup USJ", "lat": 34.6657, "lon": 135.43505}, {"id": "forbidden", "kind": "ride", "place": "forbidden", "num": "1", "label": "Forbidden Journey", "lat": 34.668193, "lon": 135.431755}, {"id": "hippogriff", "kind": "ride", "place": "hippogriff", "num": "2", "label": "Hippogriff", "lat": 34.66785, "lon": 135.43205}, {"id": "hogsmeade", "kind": "ride", "place": "hogsmeade", "num": "3", "label": "Hogsmeade", "lat": 34.668181, "lon": 135.431685}, {"id": "flying", "kind": "ride", "place": "flying", "num": "4", "label": "Flying Dinosaur", "lat": 34.6634, "lon": 135.4305}, {"id": "jpride", "kind": "ride", "place": "jpride", "num": "5", "label": "JP The Ride", "lat": 34.664397, "lon": 135.430626}, {"id": "jaws", "kind": "ride", "place": "jaws", "num": "6", "label": "JAWS", "lat": 34.666215, "lon": 135.43169}, {"id": "dream", "kind": "ride", "place": "dream", "num": "7", "label": "Hollywood Dream", "lat": 34.66655, "lon": 135.433808}, {"id": "minion", "kind": "ride", "place": "minion", "num": "8", "label": "Minion Mayhem", "lat": 34.663063, "lon": 135.432374}, {"id": "nintendo", "kind": "ride", "place": "nintendo", "num": "N", "label": "Nintendo World", "lat": 34.668567, "lon": 135.430147}, {"id": "waterworld", "kind": "show", "place": "shows", "num": "W", "label": "WaterWorld", "lat": 34.666607, "lon": 135.429737, "tip": "WaterWorld — veľká vodná show na západe (Amity / SF). Časy a či dnes beží: oficiálna USJ appka. Pri predných radoch zmoknete."}, {"id": "shows", "kind": "show", "place": "shows", "num": "S", "label": "Shows / HHN", "lat": 34.6668, "lon": 135.4335, "tip": "Show zóny / Horror Nights večer. Triwizard, Frog Choir, Hippogriff Lesson — časy v appke. HHN scare zóny obíď, ak nechceš spook."}, {"id": "food-broom", "kind": "food", "place": "hogsmeade", "num": "🍽", "label": "Three Broomsticks", "lat": 34.667789, "lon": 135.431173, "tip": "Three Broomsticks (三本の箒) v Hogsmeade — HP jedlo + Butterbeer."}, {"id": "food-amity", "kind": "food", "place": "jaws", "num": "🍽", "label": "Boardwalk Snack", "lat": 34.665644, "lon": 135.431838, "tip": "ボードウォーク・スナック (Amity) — rýchle občerstvenie pri JAWS pred Red Alert od 18:00."}, {"id": "food-jp", "kind": "food", "place": "jpride", "num": "🍽", "label": "Fossil Fuels / Jurassic", "lat": 34.664681, "lon": 135.430921, "tip": "フォッシル・フュエルズ / Jurassic snacks — medzi Flying Dino a JP Ride."}, {"id": "food-mels", "kind": "food", "place": "dream", "num": "🍽", "label": "Mel’s Drive-In", "lat": 34.665786, "lon": 135.433429, "tip": "Mel’s Drive-In (Hollywood) — blízko Dream a vstupu."}, {"id": "food-city", "kind": "food", "place": "entrance", "num": "🍽", "label": "CityWalk / Stars Restaurant", "lat": 34.665011, "lon": 135.434408, "tip": "Štúdiové / CityWalk občerstvenie pri vstupe — obed mimo 11:30–13:30 špičky vnútri."}, {"id": "wc-hp", "kind": "wc", "place": null, "num": "🚻", "label": "WC Hogsmeade", "lat": 34.667957, "lon": 135.431425}, {"id": "wc-south", "kind": "wc", "place": null, "num": "🚻", "label": "WC South St", "lat": 34.666916, "lon": 135.432648}, {"id": "wc-brighton", "kind": "wc", "place": null, "num": "🚻", "label": "WC Brighton", "lat": 34.667005, "lon": 135.433199}, {"id": "wc-minion", "kind": "wc", "place": null, "num": "🚻", "label": "WC Minion / Hester", "lat": 34.663643, "lon": 135.432719}, {"id": "wc-sf", "kind": "wc", "place": null, "num": "🚻", "label": "WC San Francisco", "lat": 34.66361, "lon": 135.431118}, {"id": "wc-amity", "kind": "wc", "place": null, "num": "🚻", "label": "WC Amity", "lat": 34.665733, "lon": 135.43073}, {"id": "wc-canyon", "kind": "wc", "place": null, "num": "🚻", "label": "WC Canyon Rd", "lat": 34.665699, "lon": 135.434068}, {"id": "aid", "kind": "aid", "place": null, "num": "✚", "label": "First Aid (救護室)", "lat": 34.667159, "lon": 135.434761, "tip": "救護室 / First Aid na Rodeo Drive — over v USJ appke."}];
 const byId = Object.fromEntries(PLACES.map(p => [p.id, p]));
+const byMarkerId = Object.fromEntries(MARKERS.map(m => [m.id, m]));
 
 const panel = document.getElementById('panel');
 const rides = document.getElementById('rides');
-const pinsG = document.getElementById('pins');
-const viewport = document.getElementById('map-viewport');
-const stage = document.getElementById('map-stage');
 const lb = document.getElementById('lb');
 const lbImg = lb.querySelector('img');
-
 let filter = 'all';
-let scale = 1, tx = 0, ty = 0;
-const MIN_Z = 0.85, MAX_Z = 3.2;
+let leafletMarkers = {};
 
 function vomitHTML(p) {
   if (p.vomit == null) return '<span class="vomit-badge none">—</span>';
-  return `<span class="vomit-badge" title="${p.vomit}/5" aria-label="Náročnosť ${p.vomit} z 5">${'🤮'.repeat(p.vomit)}<span class="vomit-n">${p.vomit}/5</span></span>`;
+  return `<span class="vomit-badge" title="${p.vomit}/5">${'🤮'.repeat(p.vomit)}<span class="vomit-n">${p.vomit}/5</span></span>`;
 }
-
 function openLb(src, alt) {
-  lbImg.src = src; lbImg.alt = alt || '';
-  lb.classList.add('open');
+  lbImg.src = src; lbImg.alt = alt || ''; lb.classList.add('open');
 }
 lb.addEventListener('click', e => { if (e.target === lb || e.target.id === 'lb-close') lb.classList.remove('open'); });
 
-function applyTransform() {
-  stage.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+function kindVisible(kind) {
+  if (filter === 'all') return true;
+  if (filter === 'ride') return kind === 'ride' || kind === 'show';
+  if (filter === 'wc') return kind === 'wc' || kind === 'aid';
+  if (filter === 'food') return kind === 'food';
+  return true;
 }
 
-function fitMap() {
-  const vw = viewport.clientWidth, vh = viewport.clientHeight;
-  scale = Math.min(vw / 400, vh / 520) * 0.98;
-  tx = (vw - 400 * scale) / 2;
-  ty = (vh - 520 * scale) / 2;
-  applyTransform();
-}
-
-function renderPins() {
-  pinsG.innerHTML = PINS.map(pin => {
-    const show = filter === 'all'
-      || (filter === 'ride' && (pin.kind === 'ride' || pin.kind === 'show'))
-      || (filter === 'wc' && pin.kind === 'wc')
-      || (filter === 'food' && pin.kind === 'food')
-      || (filter === 'food' && pin.kind === 'aid');
-    // aid visible in all + food? show aid always in 'all', and with ride/wc as utility — show in all and when not filtering exclusively wrong
-    const visible = filter === 'all' ? true
-      : filter === 'ride' ? (pin.kind === 'ride' || pin.kind === 'show')
-      : filter === 'wc' ? (pin.kind === 'wc' || pin.kind === 'aid')
-      : filter === 'food' ? (pin.kind === 'food')
-      : true;
-    if (!visible) return '';
-    let fill = '#e0b35a', stroke = '#1a1208', textFill = '#1a1208', r = 13;
-    if (pin.kind === 'wc') { fill = '#5ec8e0'; r = 12; }
-    if (pin.kind === 'food') { fill = '#7cbc8a'; r = 12; }
-    if (pin.kind === 'aid') { fill = '#d26666'; textFill = '#fff'; r = 12; }
-    if (pin.kind === 'show') { fill = '#c9a06a'; }
-    const label = (pin.kind === 'wc' || pin.kind === 'food' || pin.kind === 'aid') ? pin.num : pin.num;
-    const fontSize = (pin.kind === 'wc' || pin.kind === 'food') ? 11 : 12;
-    return `<g class="pin" data-pin="${pin.id}" data-kind="${pin.kind}" data-place="${pin.place || ''}" transform="translate(${pin.x},${pin.y})" role="button" tabindex="0" aria-label="${pin.label}">
-      <circle class="glow" r="20" fill="${fill}" opacity="0.25"/>
-      <circle r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" filter="url(#shadow)"/>
-      <text text-anchor="middle" dominant-baseline="central" font-size="${fontSize}" font-weight="700" fill="${textFill}" font-family="DM Sans,sans-serif">${label}</text>
-    </g>`;
-  }).join('');
-  pinsG.querySelectorAll('.pin').forEach(g => {
-    const go = () => selectPin(g.dataset.pin);
-    g.addEventListener('click', e => { e.stopPropagation(); go(); });
-    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+function makeIcon(m, active) {
+  const k = m.kind === 'show' ? 'show' : m.kind;
+  const cls = `pin-icon ${k}${active ? ' active' : ''}`;
+  const label = (m.kind === 'wc' || m.kind === 'food' || m.kind === 'aid') ? m.num : m.num;
+  return L.divIcon({
+    className: 'usj-pin',
+    html: `<div class="${cls}">${label}</div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    popupAnchor: [0, -14]
   });
 }
 
-function selectPin(pinId) {
-  const pin = PINS.find(p => p.id === pinId);
-  if (!pin) return;
-  pinsG.querySelectorAll('.pin').forEach(g => g.classList.toggle('active', g.dataset.pin === pinId));
+// Map bounds USJ
+const bounds = L.latLngBounds([34.6625, 135.4290], [34.6695, 135.4365]);
+const map = L.map('map', {
+  maxBounds: bounds.pad(0.15),
+  maxBoundsViscosity: 0.8,
+  minZoom: 15,
+  maxZoom: 19,
+  zoomControl: true
+});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+  maxZoom: 19
+}).addTo(map);
+map.fitBounds(bounds, { padding: [12, 12] });
+
+const cluster = L.markerClusterGroup({
+  maxClusterRadius: 36,
+  spiderfyOnMaxZoom: true,
+  showCoverageOnHover: false,
+  disableClusteringAtZoom: 18
+});
+map.addLayer(cluster);
+
+function selectMarker(mid) {
+  const m = byMarkerId[mid];
+  if (!m) return;
+  Object.keys(leafletMarkers).forEach(id => {
+    const lm = leafletMarkers[id];
+    if (lm) lm.setIcon(makeIcon(byMarkerId[id], id === mid));
+  });
   panel.classList.remove('empty');
 
-  if (pin.place && byId[pin.place] && (pin.kind === 'ride' || pin.kind === 'show')) {
-    const p = byId[pin.place];
+  // WaterWorld / shows with custom tip
+  if (m.id === 'waterworld' || (m.kind === 'show' && m.id === 'waterworld')) {
+    const tip = m.tip;
+    panel.innerHTML = `
+      <div class="body">
+        <h3><span class="num-inline">W</span>WaterWorld</h3>
+        <p class="meta">Show · západ parku (Amity / SF) · ${m.lat.toFixed(5)}, ${m.lon.toFixed(5)}</p>
+        <div class="tip"><strong>Tip:</strong> ${tip}</div>
+      </div>`;
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+    return;
+  }
+
+  if (m.place && byId[m.place] && (m.kind === 'ride' || m.kind === 'show')) {
+    const p = byId[m.place];
     const cover = p.cover || p.photos[0];
+    const extra = m.tip ? `<div class="tip"><strong>Pin:</strong> ${m.tip}</div>` : '';
     panel.innerHTML = `
       <img class="hero-shot" src="${cover}" alt="${p.name}" data-full="${cover}">
       <div class="body">
         <h3><span class="num-inline">${p.num}</span>${p.name} ${vomitHTML(p)}</h3>
-        <p class="meta">${p.zone} · ${p.height} · ${p.dur} · pin: ${pin.label}</p>
+        <p class="meta">${p.zone} · ${p.height} · ${p.dur} · ${m.label}</p>
         <p>${p.desc}</p>
         <div class="tip"><strong>Tip:</strong> ${p.tip}</div>
+        ${extra}
         <div class="gallery">${p.photos.map(u => `<img src="${u}" alt="" loading="lazy" data-full="${u}">`).join('')}</div>
       </div>`;
   } else {
-    const tip = pin.tip || (pin.kind === 'wc'
-      ? `Verejné WC — ${pin.label}. V appke USJ vieš overiť najbližšie.`
-      : pin.kind === 'aid'
-      ? pin.tip
-      : pin.tip || pin.label);
-    const icon = pin.kind === 'wc' ? '🚻' : pin.kind === 'food' ? '🍽' : '✚';
-    const linked = pin.place && byId[pin.place] ? byId[pin.place] : null;
+    const tip = m.tip || (m.kind === 'wc'
+      ? `WC — ${m.label}. Over najbližšie aj v USJ appke.`
+      : m.kind === 'aid' ? (m.tip || m.label) : (m.tip || m.label));
+    const icon = m.kind === 'wc' ? '🚻' : m.kind === 'food' ? '🍽' : '✚';
+    const linked = m.place && byId[m.place] ? byId[m.place] : null;
     const photo = linked ? (linked.cover || linked.photos[0]) : '';
     panel.innerHTML = `
-      ${photo ? `<img class="hero-shot" src="${photo}" alt="${pin.label}" data-full="${photo}">` : ''}
+      ${photo ? `<img class="hero-shot" src="${photo}" alt="${m.label}" data-full="${photo}">` : ''}
       <div class="body">
-        <h3>${icon} ${pin.label}</h3>
-        <p class="meta">${pin.kind === 'wc' ? 'Toalety' : pin.kind === 'food' ? 'Jedlo / občerstvenie' : 'First Aid'} · orientačný pin</p>
+        <h3>${icon} ${m.label}</h3>
+        <p class="meta">${m.kind} · ${m.lat.toFixed(5)}, ${m.lon.toFixed(5)}</p>
         <div class="tip"><strong>Tip:</strong> ${tip}</div>
-        ${linked ? `<p class="meta" style="margin-top:10px">Blízko: ${linked.name}</p>` : ''}
       </div>`;
   }
   panel.querySelectorAll('img').forEach(img => img.addEventListener('click', () => openLb(img.dataset.full || img.src, img.alt)));
   panel.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
+
+function rebuildMarkers() {
+  cluster.clearLayers();
+  leafletMarkers = {};
+  let n = 0;
+  MARKERS.forEach(m => {
+    if (!kindVisible(m.kind)) return;
+    const marker = L.marker([m.lat, m.lon], { icon: makeIcon(m, false), title: m.label });
+    marker.bindPopup(`<strong>${m.label}</strong><br><span style="opacity:.8">${m.kind}</span>`);
+    marker.on('click', () => selectMarker(m.id));
+    cluster.addLayer(marker);
+    leafletMarkers[m.id] = marker;
+    n++;
+  });
+  document.getElementById('marker-count').textContent =
+    `${n} markerov · ride/show ${MARKERS.filter(x => (x.kind==='ride'||x.kind==='show') && kindVisible(x.kind)).length} · WC ${MARKERS.filter(x => x.kind==='wc' && kindVisible(x.kind)).length} · jedlo ${MARKERS.filter(x => x.kind==='food' && kindVisible(x.kind)).length}`;
+}
+
+document.querySelectorAll('.filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    filter = btn.dataset.filter;
+    document.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b === btn));
+    rebuildMarkers();
+  });
+});
 
 function renderRides() {
   const main = ['forbidden','hippogriff','hogsmeade','flying','jpride','jaws','dream','minion','entrance'];
@@ -415,89 +374,37 @@ function renderRides() {
     </article>`;
   }).join('');
   rides.querySelectorAll('img.lb').forEach(img => img.addEventListener('click', () => openLb(img.dataset.full || img.src, img.alt)));
-  rides.querySelectorAll('[data-map]').forEach(btn => btn.addEventListener('click', () => {
-    const pin = PINS.find(p => p.place === btn.dataset.map && p.kind === 'ride') || PINS.find(p => p.place === btn.dataset.map);
-    if (pin) selectPin(pin.id);
-    document.getElementById('mapa').scrollIntoView({behavior:'smooth'});
-  }));
+  rides.querySelectorAll('[data-map]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const m = MARKERS.find(x => x.place === btn.dataset.map && x.kind === 'ride') || MARKERS.find(x => x.place === btn.dataset.map);
+      if (m) {
+        map.setView([m.lat, m.lon], 18);
+        selectMarker(m.id);
+        if (leafletMarkers[m.id]) leafletMarkers[m.id].openPopup();
+      }
+      document.getElementById('mapa').scrollIntoView({behavior:'smooth'});
+    });
+  });
   document.querySelectorAll('img.lb').forEach(img => {
     if (!img.dataset.bound) { img.dataset.bound='1'; img.addEventListener('click', () => openLb(img.src, img.alt)); }
   });
 }
 
-// Filters
-document.querySelectorAll('.filter').forEach(btn => {
-  btn.addEventListener('click', () => {
-    filter = btn.dataset.filter;
-    document.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b === btn));
-    renderPins();
-  });
-});
-
-// Zoom buttons
-document.getElementById('zoom-in').onclick = () => { scale = Math.min(MAX_Z, scale * 1.25); applyTransform(); };
-document.getElementById('zoom-out').onclick = () => { scale = Math.max(MIN_Z, scale / 1.25); applyTransform(); };
-document.getElementById('zoom-reset').onclick = () => fitMap();
-
-// Pan + pinch
-let dragging = false, lastX=0, lastY=0;
-let lastDist = null;
-viewport.addEventListener('pointerdown', e => {
-  dragging = true; lastX = e.clientX; lastY = e.clientY;
-  viewport.classList.add('grabbing');
-  viewport.setPointerCapture(e.pointerId);
-});
-viewport.addEventListener('pointermove', e => {
-  if (!dragging || lastDist != null) return;
-  tx += e.clientX - lastX; ty += e.clientY - lastY;
-  lastX = e.clientX; lastY = e.clientY; applyTransform();
-});
-viewport.addEventListener('pointerup', e => { dragging=false; viewport.classList.remove('grabbing'); });
-viewport.addEventListener('pointercancel', () => { dragging=false; lastDist=null; viewport.classList.remove('grabbing'); });
-
-viewport.addEventListener('wheel', e => {
-  e.preventDefault();
-  const rect = viewport.getBoundingClientRect();
-  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-  const prev = scale;
-  scale = Math.min(MAX_Z, Math.max(MIN_Z, scale * (e.deltaY < 0 ? 1.12 : 1/1.12)));
-  tx = mx - (mx - tx) * (scale / prev);
-  ty = my - (my - ty) * (scale / prev);
-  applyTransform();
-}, {passive:false});
-
-// Touch pinch
-viewport.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    dragging = false;
-    const [a,b] = e.touches;
-    lastDist = Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY);
-  }
-}, {passive:true});
-viewport.addEventListener('touchmove', e => {
-  if (e.touches.length === 2 && lastDist != null) {
-    e.preventDefault();
-    const [a,b] = e.touches;
-    const dist = Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY);
-    const rect = viewport.getBoundingClientRect();
-    const mx = (a.clientX+b.clientX)/2 - rect.left;
-    const my = (a.clientY+b.clientY)/2 - rect.top;
-    const prev = scale;
-    scale = Math.min(MAX_Z, Math.max(MIN_Z, scale * (dist / lastDist)));
-    lastDist = dist;
-    tx = mx - (mx - tx) * (scale / prev);
-    ty = my - (my - ty) * (scale / prev);
-    applyTransform();
-  }
-}, {passive:false});
-viewport.addEventListener('touchend', e => { if (e.touches.length < 2) lastDist = null; });
-
-window.addEventListener('resize', fitMap);
-
-renderPins();
+rebuildMarkers();
 renderRides();
-fitMap();
-selectPin('forbidden');
+// Highlight WaterWorld briefly on load so it's discoverable, then Forbidden as default content
+setTimeout(() => {
+  const w = MARKERS.find(m => m.id === 'waterworld');
+  if (w && leafletMarkers['waterworld']) {
+    /* keep default panel on Forbidden for rides priority */
+  }
+  selectMarker('forbidden');
+  if (leafletMarkers['forbidden']) map.setView([byMarkerId['forbidden'].lat, byMarkerId['forbidden'].lon], 17);
+}, 300);
+
+// Invalidate size after layout (mobile Safari)
+setTimeout(() => map.invalidateSize(), 400);
+window.addEventListener('resize', () => map.invalidateSize());
 </script>
 </body>
 </html>
