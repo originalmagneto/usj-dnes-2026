@@ -126,9 +126,21 @@ a{color:var(--amber)}
 .nav-links{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
 .map-shell{ position:relative; }
 .user-dot{
-  width:16px; height:16px; border-radius:50%; background:#3b82f6;
-  border:3px solid #fff; box-shadow:0 0 0 2px rgba(59,130,246,.45);
+  width:26px; height:26px; border-radius:50%; background:#3b82f6;
+  border:3px solid #fff; box-shadow:0 0 0 3px rgba(59,130,246,.5), 0 2px 8px rgba(0,0,0,.35);
+  position:relative;
 }
+.user-dot::after{
+  content:""; position:absolute; inset:-10px; border-radius:50%;
+  border:2px solid rgba(59,130,246,.55);
+  animation:user-pulse 1.6s ease-out infinite;
+}
+@keyframes user-pulse{
+  0%{ transform:scale(.55); opacity:.85; }
+  100%{ transform:scale(1.35); opacity:0; }
+}
+.locate-btn.recenter{ border-color:#3b82f6; background:rgba(59,130,246,.18); color:#dbeafe; }
+.locate-status.warn{ color:#f0c070; }
 
 
 .routes{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
@@ -213,6 +225,7 @@ a{color:var(--amber)}
           <button type="button" class="filter" data-filter="food">Jedlo</button>
         </div>
         <button type="button" class="locate-btn" id="btn-locate" aria-pressed="false">📍 Moja poloha</button>
+        <button type="button" class="locate-btn recenter" id="btn-recenter" hidden>🎯 Centrovať na mňa</button>
       </div>
       <p class="locate-status" id="locate-status" aria-live="polite"></p>
       <div style="position:relative">
@@ -293,7 +306,11 @@ let geoWatchId = null;
 let userMarker = null;
 let userCircle = null;
 let firstFix = true;
+let lastUserLatLng = null;
+let lastAccuracy = null;
+let parkMaxBounds = null;
 const locateBtn = document.getElementById('btn-locate');
+const recenterBtn = document.getElementById('btn-recenter');
 const locateStatus = document.getElementById('locate-status');
 const navFab = document.getElementById('nav-fab');
 
@@ -306,9 +323,56 @@ function navUrls(lat, lon) {
   const google = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}&travelmode=walking`;
   return { apple, google, primary: isApple() ? apple : google, secondary: isApple() ? google : apple };
 }
-function setLocateStatus(text, err) {
+function setLocateStatus(text, err, warn) {
   locateStatus.textContent = text || '';
+  locateStatus.classList.toggle('warn', !!warn && !err);
   locateBtn.classList.toggle('err', !!err);
+}
+function fmtCoord(n) {
+  return (Math.round(n * 1e5) / 1e5).toFixed(5);
+}
+function ensureUserPane() {
+  if (!map.getPane('userloc')) {
+    map.createPane('userloc');
+    map.getPane('userloc').style.zIndex = 650;
+    map.getPane('userloc').style.pointerEvents = 'none';
+  }
+}
+function relaxMapBounds() {
+  if (!parkMaxBounds) parkMaxBounds = map.options.maxBounds;
+  map.setMaxBounds(bounds.pad(3));
+  map.options.maxBoundsViscosity = 0.2;
+}
+function restoreMapBounds() {
+  if (parkMaxBounds) {
+    map.setMaxBounds(parkMaxBounds);
+    map.options.maxBoundsViscosity = 0.8;
+  }
+}
+function centerOnUser(forceZoom) {
+  if (!lastUserLatLng) return;
+  const z = forceZoom ? Math.max(map.getZoom(), 17) : map.getZoom();
+  map.setView(lastUserLatLng, z, { animate: true });
+}
+function ensureUserVisible() {
+  if (!lastUserLatLng) return;
+  if (!map.getBounds().pad(-0.15).contains(lastUserLatLng)) {
+    map.panTo(lastUserLatLng, { animate: true });
+  }
+}
+function updateLocateStatusText(accuracy) {
+  const acc = Math.round(accuracy || 0);
+  const coords = lastUserLatLng
+    ? `${fmtCoord(lastUserLatLng.lat)}, ${fmtCoord(lastUserLatLng.lng)}`
+    : '';
+  const indoor = acc > 80;
+  let msg = `Sledujem ${coords} (±${acc} m).`;
+  if (indoor) {
+    msg += ` Vnútri budovy je GPS nepresné (±${acc} m) — skús bližšie k oknu / von.`;
+  } else {
+    msg += ' Centrovať = na mňa · znova „Moja poloha“ = vypnúť.';
+  }
+  setLocateStatus(msg, false, indoor);
 }
 function stopLocate() {
   if (geoWatchId != null) {
@@ -318,34 +382,63 @@ function stopLocate() {
   locateBtn.classList.remove('active');
   locateBtn.setAttribute('aria-pressed', 'false');
   locateBtn.textContent = '📍 Moja poloha';
+  recenterBtn.hidden = !lastUserLatLng;
   firstFix = true;
+  restoreMapBounds();
+  // keep last-known marker + circle visible
 }
 function startLocate() {
   if (!navigator.geolocation) {
     setLocateStatus('Geolokácia nie je dostupná v tomto prehliadači.', true);
     return;
   }
+  ensureUserPane();
+  relaxMapBounds();
   setLocateStatus('Hľadám polohu…', false);
   locateBtn.classList.add('active');
   locateBtn.setAttribute('aria-pressed', 'true');
   locateBtn.textContent = '📍 Sledujem…';
+  recenterBtn.hidden = false;
   geoWatchId = navigator.geolocation.watchPosition(pos => {
     const { latitude: lat, longitude: lon, accuracy } = pos.coords;
     const ll = L.latLng(lat, lon);
+    lastUserLatLng = ll;
+    lastAccuracy = accuracy;
     if (!userMarker) {
-      const icon = L.divIcon({ className: '', html: '<div class="user-dot"></div>', iconSize: [16,16], iconAnchor: [8,8] });
-      userMarker = L.marker(ll, { icon, zIndexOffset: 1000, interactive: false }).addTo(map);
-      userCircle = L.circle(ll, { radius: accuracy || 25, color: '#3b82f6', weight: 1, fillOpacity: 0.12 }).addTo(map);
+      const icon = L.divIcon({
+        className: '',
+        html: '<div class="user-dot"></div>',
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
+      });
+      userMarker = L.marker(ll, {
+        icon,
+        pane: 'userloc',
+        zIndexOffset: 2000,
+        interactive: false,
+        keyboard: false
+      }).addTo(map);
+      userCircle = L.circle(ll, {
+        radius: Math.max(accuracy || 25, 12),
+        color: '#3b82f6',
+        weight: 1,
+        fillColor: '#3b82f6',
+        fillOpacity: 0.14,
+        pane: 'userloc',
+        interactive: false
+      }).addTo(map);
     } else {
       userMarker.setLatLng(ll);
       userCircle.setLatLng(ll);
       userCircle.setRadius(Math.max(accuracy || 25, 12));
     }
     if (firstFix) {
-      map.setView(ll, Math.max(map.getZoom(), 17));
+      map.setView(ll, Math.max(map.getZoom(), 17), { animate: true });
       firstFix = false;
+    } else {
+      ensureUserVisible();
     }
-    setLocateStatus(`Sledujem (±${Math.round(accuracy || 0)} m). Vypnúť = znova ťukni „Moja poloha“.`, false);
+    updateLocateStatusText(accuracy);
   }, err => {
     stopLocate();
     let msg = 'Polohu sa nepodarilo získať.';
@@ -353,16 +446,32 @@ function startLocate() {
     else if (err && err.code === 2) msg = 'Poloha nedostupná. Skús vonku / zapni GPS.';
     else if (err && err.code === 3) msg = 'Čas vypršal. Skús znova.';
     setLocateStatus(msg, true);
-  }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
+  }, { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 });
+}
+function doRecenter() {
+  if (!lastUserLatLng) {
+    setLocateStatus('Zatiaľ nemám polohu — najprv zapni „Moja poloha“.', true);
+    return;
+  }
+  if (geoWatchId == null) relaxMapBounds();
+  centerOnUser(true);
+  if (geoWatchId != null) updateLocateStatusText(lastAccuracy || 0);
+  else setLocateStatus(`Centrované na poslednú polohu (±${Math.round(lastAccuracy || 0)} m).`, false, (lastAccuracy || 0) > 80);
 }
 locateBtn.addEventListener('click', () => {
   if (geoWatchId != null) {
     stopLocate();
-    setLocateStatus('Poloha vypnutá.', false);
+    setLocateStatus(
+      lastUserLatLng
+        ? `Poloha vypnutá (posledná: ${fmtCoord(lastUserLatLng.lat)}, ${fmtCoord(lastUserLatLng.lng)}). Marker ostáva — Centrovať ho znova ukáže.`
+        : 'Poloha vypnutá.',
+      false
+    );
   } else {
     startLocate();
   }
 });
+recenterBtn.addEventListener('click', doRecenter);
 
 function updateNavUi() {
   const m = selectedMarkerId ? byMarkerId[selectedMarkerId] : null;
@@ -435,6 +544,10 @@ const map = L.map('map', {
   maxZoom: 19,
   zoomControl: true
 });
+parkMaxBounds = bounds.pad(0.15);
+map.createPane('userloc');
+map.getPane('userloc').style.zIndex = 650;
+map.getPane('userloc').style.pointerEvents = 'none';
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
   maxZoom: 19
