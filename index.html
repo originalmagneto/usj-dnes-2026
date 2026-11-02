@@ -5,291 +5,391 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>USJ dnes – Harry Potter, Jurský park, JAWS</title>
 <meta name="description" content="Interaktívny sprievodca Universal Studios Japan – 2. 11. 2026">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#0f1419; --card:#1a222c; --card2:#232d3a; --text:#eef2f6; --muted:#9aa8b5;
-  --accent:#5eb3f0; --accent2:#f0b35e; --good:#6bcf8e; --warn:#f0a060; --hot:#f07178;
-  --line:#2c3848; --radius:14px; --hl:#5eb3f0;
+  --bg: #0c1017;
+  --bg2: #121826;
+  --card: #161d2b;
+  --card2: #1c2536;
+  --line: rgba(232, 196, 132, 0.14);
+  --text: #f3efe6;
+  --muted: #a39a8a;
+  --amber: #e0b35a;
+  --amber-dim: #b8893a;
+  --good: #7cbc8a;
+  --warn: #d4924a;
+  --hot: #d26666;
+  --radius: 18px;
+  --shadow: 0 18px 40px rgba(0,0,0,.45);
+  --font-display: "Fraunces", Georgia, serif;
+  --font: "DM Sans", system-ui, sans-serif;
 }
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg:#f4f6f8; --card:#fff; --card2:#eef2f6; --text:#15202b; --muted:#5b6b7a;
-    --accent:#1a7bbf; --accent2:#b87514; --good:#1f8a4c; --warn:#b85c12; --hot:#c2303a;
-    --line:#d5dde6; --hl:#1a7bbf;
-  }
-}
-* { box-sizing:border-box; }
-html { scroll-behavior:smooth; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  background:var(--bg); color:var(--text); line-height:1.45; font-size:16px;
+  margin: 0;
+  font-family: var(--font);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(224,179,90,.12), transparent 55%),
+    radial-gradient(900px 500px at 100% 20%, rgba(50,80,140,.18), transparent 50%),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  font-size: 16px;
+  min-height: 100dvh;
 }
-.wrap { max-width:760px; margin:0 auto; padding:14px 12px 56px; }
-header {
-  background:linear-gradient(145deg,#1e3a5f 0%,#0f1419 70%);
-  border:1px solid var(--line); border-radius:var(--radius); padding:18px 16px; margin-bottom:12px;
+body::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-@media (prefers-color-scheme: light) {
-  header { background:linear-gradient(145deg,#d6e8f8 0%,#fff 70%); }
+.wrap { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 0 0 72px; }
+
+/* HERO */
+.hero {
+  position: relative;
+  min-height: 52vw; max-height: 420px; min-height: 280px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
 }
-h1 { margin:0 0 6px; font-size:1.4rem; letter-spacing:-0.02em; }
-.sub { color:var(--muted); font-size:.9rem; margin:0; }
-.toc { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.hero img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: brightness(.72) saturate(1.05);
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12,16,23,.25) 0%, rgba(12,16,23,.55) 45%, rgba(12,16,23,.96) 100%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 22px 18px 20px;
+}
+.kicker {
+  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--amber); font-weight: 600; margin: 0 0 8px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 6.2vw, 2.35rem);
+  line-height: 1.08; letter-spacing: -0.03em;
+  margin: 0 0 8px; text-wrap: balance;
+}
+.hero .sub { color: #d6cdb8; margin: 0; font-size: .95rem; max-width: 34ch; }
+.toc {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
+}
 .toc a {
-  text-decoration:none; background:var(--card2); border:1px solid var(--line);
-  padding:6px 10px; border-radius:999px; font-size:.82rem; color:var(--text);
+  text-decoration: none; color: var(--text);
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  padding: 10px 14px; min-height: 44px; display: inline-flex; align-items: center;
+  border-radius: 999px; font-size: .84rem; font-weight: 500;
 }
+.toc a:active { transform: scale(.98); }
+
+.pad { padding: 0 16px; }
 h2 {
-  font-size:1.1rem; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 1.35rem; font-weight: 650;
+  margin: 28px 0 12px; letter-spacing: -0.02em;
 }
 .card {
-  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-  padding:14px; margin-bottom:12px;
+  background: linear-gradient(180deg, var(--card), var(--bg2));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 16px 14px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
 }
-ol.postup { margin:0; padding-left:1.2rem; }
-ol.postup li { margin:.4rem 0; }
+ol.postup { margin: 0; padding-left: 1.15rem; }
+ol.postup li { margin: .55rem 0; padding-left: .15rem; }
 .badge {
-  display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.03em;
-  text-transform:uppercase; padding:3px 8px; border-radius:999px; vertical-align:middle;
+  display: inline-block; font-size: .68rem; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 999px; vertical-align: middle;
 }
-.d-nizka { background:color-mix(in srgb,var(--good) 22%,transparent); color:var(--good); }
-.d-stred { background:color-mix(in srgb,var(--accent2) 22%,transparent); color:var(--accent2); }
-.d-vysoka { background:color-mix(in srgb,var(--warn) 25%,transparent); color:var(--warn); }
-.d-extreme { background:color-mix(in srgb,var(--hot) 25%,transparent); color:var(--hot); }
-.map-shell {
-  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-  padding:10px; margin-bottom:10px;
+.d-nizka { background: rgba(124,188,138,.18); color: var(--good); }
+.d-stred { background: rgba(224,179,90,.16); color: var(--amber); }
+.d-vysoka { background: rgba(212,146,74,.2); color: var(--warn); }
+.d-extreme { background: rgba(210,102,102,.2); color: var(--hot); }
+.hint { color: var(--muted); font-size: .88rem; margin: 0 0 12px; }
+
+/* ZONE GRID — replaces cluttered SVG */
+.zone-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
 }
-.map-shell svg { width:100%; height:auto; display:block; touch-action:manipulation; }
-.zone { cursor:pointer; transition:opacity .15s, filter .15s; }
-.zone:hover, .zone:focus { filter:brightness(1.12); outline:none; }
-.zone.active { filter:brightness(1.2) saturate(1.15); stroke-width:2.5px; }
-.marker { cursor:pointer; }
-.marker circle { transition: r .15s, fill .15s; }
-.marker.active circle { fill:#fff; stroke:var(--hl); stroke-width:3; }
-.marker text { pointer-events:none; font-family:sans-serif; font-weight:700; }
-.hint { color:var(--muted); font-size:.85rem; margin:8px 0 0; }
+.zone-tile {
+  position: relative; border: 0; padding: 0; margin: 0;
+  border-radius: 16px; overflow: hidden; cursor: pointer;
+  min-height: 118px; text-align: left; color: #fff;
+  background: #222; box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.zone-tile.wide { grid-column: 1 / -1; min-height: 132px; }
+.zone-tile img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; filter: brightness(.62) saturate(1.08);
+  transition: transform .35s ease, filter .25s ease;
+}
+.zone-tile:active img { transform: scale(1.04); }
+.zone-tile.active { outline: 2px solid var(--amber); outline-offset: 1px; }
+.zone-tile.active img { filter: brightness(.72) saturate(1.12); }
+.zone-tile .shade {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 20%, rgba(0,0,0,.78) 100%);
+}
+.zone-tile .content {
+  position: relative; z-index: 1; height: 100%;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 12px 12px 11px; min-height: 118px;
+}
+.zone-tile.wide .content { min-height: 132px; }
+.zone-num {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: .95rem;
+  background: var(--amber); color: #1a1208;
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+}
+.zone-tile .label {
+  font-family: var(--font-display);
+  font-size: 1.05rem; line-height: 1.15; margin: 0 0 2px;
+  text-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+.zone-tile .sublabel {
+  font-size: .78rem; color: #e8dfd0; opacity: .9; margin: 0;
+}
+
+/* CHIP ROW — numbers + short names, no truncation */
+.chiprow {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 4px 0 14px;
+}
+.chip {
+  border: 1px solid var(--line);
+  background: var(--card2);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 12px;
+  min-height: 44px;
+  font-size: .84rem; font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.chip .n {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(224,179,90,.2); color: var(--amber);
+  display: inline-grid; place-items: center; font-size: .72rem;
+}
+.chip.active {
+  border-color: var(--amber);
+  background: rgba(224,179,90,.12);
+  color: #f5e6c4;
+}
+
+/* DETAIL PANEL */
 #panel {
-  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-  padding:14px; min-height:120px; margin-bottom:14px;
-  border-top:3px solid var(--accent);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+  min-height: 80px;
 }
-#panel.empty { color:var(--muted); border-top-color:var(--line); }
-#panel h3 { margin:0 0 6px; font-size:1.08rem; }
-#panel .meta { color:var(--muted); font-size:.88rem; margin:4px 0 8px; }
+#panel.empty {
+  padding: 22px 16px; color: var(--muted); text-align: center;
+  border-style: dashed;
+}
+#panel .hero-shot {
+  width: 100%; height: 200px; object-fit: cover; display: block;
+  background: var(--card2); cursor: pointer;
+}
+#panel .body { padding: 14px 16px 16px; }
+#panel h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem; margin: 0 0 6px; letter-spacing: -0.02em;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+}
+#panel .meta { color: var(--muted); font-size: .88rem; margin: 0 0 10px; }
 #panel .tip {
-  background:var(--card2); border-left:3px solid var(--accent); padding:8px 10px;
-  margin-top:8px; border-radius:0 8px 8px 0; font-size:.92rem;
+  background: rgba(224,179,90,.08);
+  border-left: 3px solid var(--amber);
+  padding: 10px 12px; margin-top: 10px;
+  border-radius: 0 10px 10px 0; font-size: .92rem;
 }
 .gallery {
-  display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px;
 }
 .gallery img {
-  width:100%; height:88px; object-fit:cover; border-radius:8px; background:var(--card2);
-  cursor:pointer;
+  width: 100%; height: 86px; object-fit: cover; border-radius: 10px;
+  background: var(--card2); cursor: pointer;
 }
-@media (min-width:520px) {
-  .gallery img { height:110px; }
-}
-.lightbox {
-  position:fixed; inset:0; background:rgba(0,0,0,.88); display:none;
-  align-items:center; justify-content:center; z-index:50; padding:16px;
-}
-.lightbox.open { display:flex; }
-.lightbox img { max-width:100%; max-height:90vh; border-radius:8px; }
-.lightbox button {
-  position:absolute; top:12px; right:12px; background:var(--card); color:var(--text);
-  border:1px solid var(--line); border-radius:999px; width:40px; height:40px; font-size:1.2rem;
-}
+
+/* RIDE CARDS */
 .ride {
-  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-  overflow:hidden; margin-bottom:12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
 }
-.ride .gal {
-  display:grid; grid-template-columns:2fr 1fr; grid-template-rows:1fr 1fr; gap:4px; height:200px;
+.ride .cover {
+  width: 100%; height: 210px; object-fit: cover; display: block;
+  background: var(--card2); cursor: pointer;
 }
-.ride .gal img { width:100%; height:100%; object-fit:cover; display:block; background:var(--card2); cursor:pointer; }
-.ride .gal img:first-child { grid-row:1 / span 2; }
-.ride .body { padding:12px 14px 14px; }
-.ride h3 { margin:0 0 4px; font-size:1.05rem; }
-.num {
-  display:inline-flex; align-items:center; justify-content:center;
-  min-width:1.5rem; height:1.5rem; padding:0 6px; border-radius:999px;
-  background:var(--accent); color:#041018; font-weight:800; font-size:.85rem; margin-right:6px;
+.ride .thumbs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
 }
-.meta { color:var(--muted); font-size:.88rem; margin:6px 0; }
+.ride .thumbs img {
+  width: 100%; height: 96px; object-fit: cover; display: block; cursor: pointer;
+  background: var(--card2);
+}
+.ride .body { padding: 14px 16px 16px; }
+.ride h3 {
+  font-family: var(--font-display);
+  font-size: 1.18rem; margin: 0 0 6px; letter-spacing: -0.02em;
+}
+.meta { color: var(--muted); font-size: .88rem; margin: 6px 0; }
 .tip {
-  background:var(--card2); border-left:3px solid var(--accent); padding:8px 10px;
-  margin-top:8px; border-radius:0 8px 8px 0; font-size:.92rem;
+  background: rgba(224,179,90,.08);
+  border-left: 3px solid var(--amber);
+  padding: 10px 12px; margin-top: 10px;
+  border-radius: 0 10px 10px 0; font-size: .92rem;
+}
+.btn-map {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  background: var(--card2);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 11px 14px; min-height: 44px;
+  font-weight: 600; font-size: .88rem; font-family: var(--font);
+  cursor: pointer;
 }
 .note {
-  border:1px dashed var(--warn); background:color-mix(in srgb,var(--warn) 10%,var(--card));
-  border-radius:var(--radius); padding:12px 14px; margin:12px 0;
+  border: 1px solid rgba(212,146,74,.35);
+  background: rgba(212,146,74,.08);
+  border-radius: var(--radius);
+  padding: 14px 16px; margin: 14px 0;
 }
-ul.tips { margin:0; padding-left:1.15rem; }
-ul.tips li { margin:.4rem 0; }
-.chiprow { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 0; }
-.chip {
-  border:1px solid var(--line); background:var(--card2); color:var(--text);
-  border-radius:999px; padding:6px 10px; font-size:.8rem; cursor:pointer;
+ul.tips { margin: 0; padding-left: 1.15rem; }
+ul.tips li { margin: .45rem 0; }
+.lightbox {
+  position: fixed; inset: 0; background: rgba(0,0,0,.9);
+  display: none; align-items: center; justify-content: center;
+  z-index: 80; padding: 16px;
 }
-.chip.active { border-color:var(--accent); color:var(--accent); }
-a { color:var(--accent); }
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 88dvh; border-radius: 10px; }
+.lightbox button {
+  position: absolute; top: 14px; right: 14px;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--card); color: var(--text);
+  font-size: 1.3rem; cursor: pointer;
+}
 footer {
-  margin-top:24px; padding-top:14px; border-top:1px solid var(--line);
-  color:var(--muted); font-size:.78rem;
+  margin: 28px 16px 0; padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted); font-size: .78rem;
+}
+a { color: var(--amber); }
+.num-inline {
+  display: inline-grid; place-items: center;
+  min-width: 1.55rem; height: 1.55rem; padding: 0 5px;
+  border-radius: 999px; background: var(--amber); color: #1a1208;
+  font-weight: 800; font-size: .82rem; margin-right: 4px;
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>USJ dnes – Harry Potter, Jurský park, JAWS</h1>
-    <p class="sub">2. 11. 2026 · Universal Studios Japan · bez Express Passu · 8:00–22:00 · interaktívna mapa</p>
-    <nav class="toc">
-      <a href="#postup">Postup</a>
-      <a href="#mapa">Mapa</a>
-      <a href="#atrakcie">Atrakcie</a>
-      <a href="#shows">Shows</a>
-      <a href="#tipy">Tipy</a>
-    </nav>
+  <header class="hero">
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=1280" alt="Hogsmeade, Universal Studios Japan" width="1280" height="720">
+    <div class="hero-overlay">
+      <p class="kicker">2. 11. 2026 · Osaka · bez Express Passu</p>
+      <h1>USJ dnes — Harry Potter, Jurský park, JAWS</h1>
+      <p class="sub">Park 8:00–22:00. Ťukni na zónu — tipy, fotky a poradie na jeden deň.</p>
+      <nav class="toc" aria-label="Sekcie">
+        <a href="#postup">Postup</a>
+        <a href="#mapa">Mapa</a>
+        <a href="#atrakcie">Atrakcie</a>
+        <a href="#shows">Shows</a>
+        <a href="#tipy">Tipy</a>
+      </nav>
+    </div>
   </header>
 
-  <section id="postup" class="card">
-    <h2 style="margin-top:0;border:0;padding:0">Krátky postup</h2>
-    <ol class="postup">
-      <li><strong>Odchod ~11:30</strong> z Tsuruhashi → JR Osaka Loop → <strong>Nishikujō</strong> → JR Yumesaki → <strong>Universal City</strong> (~35–40 min) → brána ~12:15.</li>
-      <li><strong>Hneď po vstupe:</strong> appka USJ + časový lístok Super Nintendo World (bez Express Passu inak lotéria).</li>
-      <li><strong>Obed</strong> mimo 11:30–13:30 (CityWalk alebo neskôr vnútri).</li>
-      <li>Poradie: <strong>Harry Potter → Jurský park → JAWS od 18:00</strong> → Hollywood Dream.</li>
-      <li><strong>Zajtra 3. 11.:</strong> checkout Osaka do 11:00.</li>
-    </ol>
-  </section>
+  <div class="pad">
+    <section id="postup" class="card" style="margin-top:16px">
+      <h2 style="margin-top:0">Krátky postup</h2>
+      <ol class="postup">
+        <li><strong>Odchod ~11:30</strong> z Tsuruhashi → JR Loop → <strong>Nishikujō</strong> → JR Yumesaki → <strong>Universal City</strong> (~35–40 min) → brána ~12:15.</li>
+        <li><strong>Hneď po vstupe:</strong> appka USJ + časový lístok Super Nintendo World (inak lotéria).</li>
+        <li><strong>Obed</strong> mimo 11:30–13:30 (CityWalk alebo neskôr vnútri).</li>
+        <li>Poradie: <strong>Harry Potter → Jurský park → JAWS od 18:00</strong> → Hollywood Dream.</li>
+        <li><strong>Zajtra 3. 11.:</strong> checkout Osaka do 11:00.</li>
+      </ol>
+    </section>
 
-  <h2 id="mapa">Interaktívna mapa</h2>
-  <p class="hint" style="margin-top:0">Ťukni na zónu alebo číslo — dole sa otvorí popis, tip a fotky.</p>
-  <div class="map-shell">
-    <svg id="usj-map" viewBox="0 0 360 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interaktívna mapa USJ">
-      <rect width="360" height="430" fill="#121820"/>
-      <!-- Entrance -->
-      <g class="zone" data-id="entrance" tabindex="0" role="button" aria-label="Vstup CityWalk">
-        <rect x="20" y="360" width="320" height="50" rx="8" fill="#2a3544" stroke="#4a5a70"/>
-        <text x="180" y="390" fill="#cfd8e3" font-size="13" text-anchor="middle" font-family="sans-serif">VSTUP / CityWalk</text>
-      </g>
-      <!-- Hollywood -->
-      <g class="zone" data-id="dream" tabindex="0" role="button" aria-label="Hollywood Dream">
-        <rect x="20" y="290" width="150" height="60" rx="8" fill="#3a2f1f" stroke="#8a7040"/>
-        <text x="95" y="316" fill="#f0d9a8" font-size="12" text-anchor="middle" font-family="sans-serif">Hollywood</text>
-        <text x="95" y="334" fill="#f0b35e" font-size="11" text-anchor="middle" font-family="sans-serif">⑦ Dream</text>
-      </g>
-      <!-- New York (shows tip) -->
-      <g class="zone" data-id="shows" tabindex="0" role="button" aria-label="Shows">
-        <rect x="185" y="290" width="155" height="60" rx="8" fill="#1f2f3a" stroke="#4a708a"/>
-        <text x="262" y="316" fill="#b8d4e8" font-size="12" text-anchor="middle" font-family="sans-serif">New York</text>
-        <text x="262" y="334" fill="#9aa8b5" font-size="10" text-anchor="middle" font-family="sans-serif">S Shows / HHN</text>
-      </g>
-      <!-- San Francisco -->
-      <g class="zone" data-id="jaws" tabindex="0" role="button" aria-label="San Francisco Amity JAWS">
-        <rect x="20" y="210" width="110" height="70" rx="8" fill="#1f3a2a" stroke="#4a8a60"/>
-        <text x="75" y="240" fill="#b8e8c8" font-size="11" text-anchor="middle" font-family="sans-serif">San Francisco</text>
-        <text x="75" y="258" fill="#9aa8b5" font-size="10" text-anchor="middle" font-family="sans-serif">/ Amity</text>
-      </g>
-      <!-- Amity JAWS -->
-      <g class="zone" data-id="jaws" tabindex="0" role="button" aria-label="JAWS">
-        <rect x="140" y="210" width="100" height="70" rx="8" fill="#1a2a3a" stroke="#3a6a9a"/>
-        <text x="190" y="240" fill="#a8c8e8" font-size="11" text-anchor="middle" font-family="sans-serif">Amity</text>
-        <text x="190" y="258" fill="#5eb3f0" font-size="12" text-anchor="middle" font-family="sans-serif">⑥ JAWS</text>
-      </g>
-      <!-- Waterworld / shows -->
-      <g class="zone" data-id="shows" tabindex="0" role="button" aria-label="WaterWorld shows">
-        <rect x="250" y="210" width="90" height="70" rx="8" fill="#3a2a1a" stroke="#8a6040"/>
-        <text x="295" y="250" fill="#e8c8a8" font-size="11" text-anchor="middle" font-family="sans-serif">WaterWorld</text>
-      </g>
-      <!-- Jurassic -->
-      <g class="zone" data-id="flying" tabindex="0" role="button" aria-label="Jurassic Park">
-        <rect x="20" y="120" width="155" height="80" rx="8" fill="#2a3a1a" stroke="#6a8a40"/>
-        <text x="97" y="150" fill="#d0e8a8" font-size="12" text-anchor="middle" font-family="sans-serif">Jurassic Park</text>
-        <text x="97" y="170" fill="#6bcf8e" font-size="11" text-anchor="middle" font-family="sans-serif">④ Flying · ⑤ Ride</text>
-      </g>
-      <!-- Minion -->
-      <g class="zone" data-id="minion" tabindex="0" role="button" aria-label="Minion Park">
-        <rect x="185" y="120" width="155" height="80" rx="8" fill="#2a1f3a" stroke="#6a4a8a"/>
-        <text x="262" y="150" fill="#d8c8f0" font-size="11" text-anchor="middle" font-family="sans-serif">Minion Park</text>
-        <text x="262" y="172" fill="#c9a0f0" font-size="11" text-anchor="middle" font-family="sans-serif">⑧ Mayhem</text>
-      </g>
-      <!-- Wizarding -->
-      <g class="zone" data-id="forbidden" tabindex="0" role="button" aria-label="Wizarding World">
-        <rect x="20" y="25" width="200" height="85" rx="8" fill="#1a2740" stroke="#5a7aaa"/>
-        <text x="120" y="52" fill="#c8daf0" font-size="11" text-anchor="middle" font-family="sans-serif">Wizarding World</text>
-        <text x="120" y="72" fill="#5eb3f0" font-size="11" text-anchor="middle" font-family="sans-serif">① Forbidden · ② Hippogriff</text>
-        <text x="120" y="90" fill="#9aa8b5" font-size="10" text-anchor="middle" font-family="sans-serif">③ Hogsmeade / shows</text>
-      </g>
-      <!-- Nintendo -->
-      <g class="zone" data-id="nintendo" tabindex="0" role="button" aria-label="Super Nintendo World">
-        <rect x="230" y="25" width="110" height="85" rx="8" fill="#3a1a1a" stroke="#8a4040"/>
-        <text x="285" y="62" fill="#f0c0c0" font-size="11" text-anchor="middle" font-family="sans-serif">Super</text>
-        <text x="285" y="80" fill="#f0c0c0" font-size="11" text-anchor="middle" font-family="sans-serif">Nintendo</text>
-      </g>
-      <!-- Markers -->
-      <g class="marker" data-id="forbidden"><circle cx="55" cy="55" r="11" fill="#5eb3f0"/><text x="55" y="59" text-anchor="middle" font-size="11" fill="#041018">1</text></g>
-      <g class="marker" data-id="hippogriff"><circle cx="120" cy="55" r="11" fill="#5eb3f0"/><text x="120" y="59" text-anchor="middle" font-size="11" fill="#041018">2</text></g>
-      <g class="marker" data-id="hogsmeade"><circle cx="175" cy="90" r="11" fill="#5eb3f0"/><text x="175" y="94" text-anchor="middle" font-size="11" fill="#041018">3</text></g>
-      <g class="marker" data-id="flying"><circle cx="55" cy="165" r="11" fill="#6bcf8e"/><text x="55" y="169" text-anchor="middle" font-size="11" fill="#041018">4</text></g>
-      <g class="marker" data-id="jpride"><circle cx="130" cy="165" r="11" fill="#6bcf8e"/><text x="130" y="169" text-anchor="middle" font-size="11" fill="#041018">5</text></g>
-      <g class="marker" data-id="jaws"><circle cx="190" cy="245" r="11" fill="#5eb3f0"/><text x="190" y="249" text-anchor="middle" font-size="11" fill="#041018">6</text></g>
-      <g class="marker" data-id="dream"><circle cx="95" cy="310" r="11" fill="#f0b35e"/><text x="95" y="314" text-anchor="middle" font-size="11" fill="#041018">7</text></g>
-      <g class="marker" data-id="minion"><circle cx="262" cy="165" r="11" fill="#c9a0f0"/><text x="262" y="169" text-anchor="middle" font-size="11" fill="#041018">8</text></g>
-      <g class="marker" data-id="nintendo"><circle cx="285" cy="45" r="11" fill="#f07178"/><text x="285" y="49" text-anchor="middle" font-size="10" fill="#041018">N</text></g>
-      <g class="marker" data-id="entrance"><circle cx="40" cy="385" r="11" fill="#9aa8b5"/><text x="40" y="389" text-anchor="middle" font-size="10" fill="#041018">E</text></g>
-      <g class="marker" data-id="shows"><circle cx="320" cy="310" r="11" fill="#f0b35e"/><text x="320" y="314" text-anchor="middle" font-size="10" fill="#041018">S</text></g>
-    </svg>
-    <div class="chiprow" id="chips"></div>
-    <p class="hint">Schéma zón (nie GPS). Nintendo len s timed entry / Expressom.</p>
-  </div>
+    <h2 id="mapa">Mapa zón</h2>
+    <p class="hint">Veľké dlaždice s fotkou — ťukni, dole sa otvorí detail. Žiadne prekryté texty.</p>
+    <div class="zone-grid" id="zone-grid" aria-label="Interaktívna mapa zón"></div>
+    <div class="chiprow" id="chips" aria-label="Rýchly výber atrakcie"></div>
+    <div id="panel" class="empty" aria-live="polite">Ťukni na dlaždicu — tu uvidíš popis, tip a fotky.</div>
 
-  <div id="panel" class="empty" aria-live="polite">Ťukni na mapu — tu sa ukáže atrakcia, tip a fotky.</div>
+    <h2 id="atrakcie">Atrakcie</h2>
+    <div id="rides"></div>
 
-  <h2 id="atrakcie">Atrakcie s fotkami</h2>
-  <div id="rides"></div>
+    <div class="note">
+      <strong>Back to the Future už nie je.</strong> Jazda BTTF skončila v <strong>máji 2016</strong>. Nahradil ju <strong>Minion Mayhem</strong>.
+      <p style="margin:10px 0 0">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Back_to_the_Future_The_Ride_in_Universal_Studios_Japan.jpg?width=800" alt="BTTF The Ride USJ (historická)" loading="lazy" class="lb" style="width:100%;border-radius:12px;max-height:220px;object-fit:cover;cursor:pointer">
+      </p>
+    </div>
 
-  <div class="note">
-    <strong>Back to the Future už nie je.</strong> Jazda BTTF skončila v <strong>máji 2016</strong>. Nahradil ju <strong>Minion Mayhem</strong>.
-    <p style="margin:10px 0 0">
-      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Back_to_the_Future_The_Ride_in_Universal_Studios_Japan.jpg?width=800" alt="BTTF The Ride USJ (historická)" loading="lazy" style="width:100%;border-radius:10px;max-height:200px;object-fit:cover;cursor:pointer" class="lb">
-    </p>
-  </div>
+    <h2 id="shows">Shows</h2>
+    <div class="card">
+      <ul class="tips">
+        <li><strong>Wizarding World:</strong> Triwizard Spirit Rally, Frog Choir, Hippogriff Magical Lesson — časy v appke.</li>
+        <li><strong>WaterWorld:</strong> veľká vodná show (ak beží podľa dnešného rozvrhu).</li>
+        <li><strong>Halloween Horror Nights (večer):</strong> scare zóny. Kto nechce spook, obíď označené zóny v appke.</li>
+      </ul>
+    </div>
 
-  <h2 id="shows">Shows (dnes)</h2>
-  <div class="card">
-    <ul class="tips">
-      <li><strong>Wizarding World:</strong> Triwizard Spirit Rally, Frog Choir, Hippogriff Magical Lesson — časy v appke.</li>
-      <li><strong>WaterWorld:</strong> veľká vodná show (ak beží podľa dnešného rozvrhu v appke).</li>
-      <li><strong>Halloween Horror Nights (večer):</strong> scare zóny po parku. Nie je to detailný scare guide — kto nechce spook, sleduj appku a obíď označené zóny.</li>
-    </ul>
-    <p class="hint">Ťukni „S“ na mape pre fotky atmosféry HP / večer.</p>
-  </div>
-
-  <h2 id="tipy">Top tipy bez Express Passu</h2>
-  <div class="card">
-    <ul class="tips">
-      <li>Jeden telefón = jedna skupina v appke (rovnaký Nintendo slot).</li>
-      <li>Timed entry Nintendo hneď za bránou; inak lotéria ≥1 h vopred (do 19:00).</li>
-      <li>Rady vždy v appke; Single Rider, ak atrakcia ponúka.</li>
-      <li>Pršiplášť: dážď + JP Ride + JAWS.</li>
-      <li><strong>JAWS dnes od 18:00</strong> (Red Alert).</li>
-      <li>Horror Nights večer — podľa chuti.</li>
-      <li><strong>Zajtra checkout do 11:00</strong> — nevracajte sa neskoro.</li>
-    </ul>
+    <h2 id="tipy">Tipy bez Express Passu</h2>
+    <div class="card">
+      <ul class="tips">
+        <li>Jeden telefón = jedna skupina v appke (rovnaký Nintendo slot).</li>
+        <li>Timed entry Nintendo hneď za bránou; inak lotéria ≥1 h vopred (do 19:00).</li>
+        <li>Rady vždy v appke; Single Rider, ak atrakcia ponúka.</li>
+        <li>Pršiplášť: dážď + JP Ride + JAWS.</li>
+        <li><strong>JAWS dnes od 18:00</strong> (Red Alert).</li>
+        <li>Horror Nights večer — podľa chuti.</li>
+        <li><strong>Zajtra checkout do 11:00</strong> — nevracajte sa neskoro.</li>
+      </ul>
+    </div>
   </div>
 
   <footer>
-    Fotky: Wikimedia Commons. Výšky/časy: USJ oficiálne. Náročnosť je poradná.<br>
-    33 overených foto URL · text+SVG+JS offline; fotky potrebujú sieť.<br>
-    Sprievodca 2. 11. 2026 · <a href="https://originalmagneto.github.io/usj-dnes-2026/">GitHub Pages</a>
+    Fotky Wikimedia Commons · výšky/časy USJ · náročnosť poradná.<br>
+    33 foto URL · Fraunces + DM Sans · amber / deep navy.<br>
+    <a href="https://originalmagneto.github.io/usj-dnes-2026/">GitHub Pages</a>
   </footer>
 </div>
 
-<div class="lightbox" id="lb" role="dialog" aria-modal="true"><button type="button" aria-label="Zavrieť" id="lb-close">×</button><img alt=""></div>
+<div class="lightbox" id="lb" role="dialog" aria-modal="true">
+  <button type="button" aria-label="Zavrieť" id="lb-close">×</button>
+  <img alt="">
+</div>
 
 <script>
 const PLACES = [
@@ -308,7 +408,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/UNIVERSAL_STUDIOS_JAPAN_ENTRANCE.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/USJ_Entrance_-_2020-01-01.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/UNIVERSAL_STUDIOS_JAPAN_GATE.jpg?width=800"
-    ]
+    ],
+    "emoji": "🚪",
+    "short": "Vstup",
+    "tone": "#3d4a5c",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/UNIVERSAL_STUDIOS_JAPAN_ENTRANCE.jpg?width=800"
   },
   {
     "id": "forbidden",
@@ -325,7 +429,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/Hogwarts_School_of_Witchcraft_and_Wizardry_in_Universal_Studios_Japan.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_USJ.JPG?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_by_night_USJ.JPG?width=800"
-    ]
+    ],
+    "emoji": "🏰",
+    "short": "Forbidden",
+    "tone": "#2a4a7a",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Hogwarts_School_of_Witchcraft_and_Wizardry_in_Universal_Studios_Japan.jpg?width=800"
   },
   {
     "id": "hippogriff",
@@ -342,7 +450,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ_2024.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ.JPG?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Hagrid%27s_Hut_at_Universal_Studios_Japan.jpg?width=800"
-    ]
+    ],
+    "emoji": "🦅",
+    "short": "Hippogriff",
+    "tone": "#2a4a7a",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ_2024.jpg?width=800"
   },
   {
     "id": "hogsmeade",
@@ -360,7 +472,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_2.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter_-_Ollivanders_USJ.JPG?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter10_USJ.JPG?width=800"
-    ]
+    ],
+    "emoji": "🍺",
+    "short": "Hogsmeade",
+    "tone": "#2a4a7a",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=800"
   },
   {
     "id": "flying",
@@ -377,7 +493,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_3.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Entrance_of_The_Flying_Dinosaur.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_1.jpg?width=800"
-    ]
+    ],
+    "emoji": "🦖",
+    "short": "Flying Dino",
+    "tone": "#3a5a28",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_3.jpg?width=800"
   },
   {
     "id": "jpride",
@@ -394,7 +514,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_(Universal_Studios_Japan).jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_at_Universal_Studios_Japan_5.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_(Universal_Studios_Japan).jpg?width=800"
-    ]
+    ],
+    "emoji": "🌊",
+    "short": "JP Ride",
+    "tone": "#3a5a28",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_(Universal_Studios_Japan).jpg?width=800"
   },
   {
     "id": "jaws",
@@ -411,7 +535,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_03.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_07.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Amity_village_-_panoramio.jpg?width=800"
-    ]
+    ],
+    "emoji": "🦈",
+    "short": "JAWS",
+    "tone": "#1e4a5c",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_03.jpg?width=800"
   },
   {
     "id": "dream",
@@ -428,7 +556,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_The_Ride.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Helix_of_Hollywood_Dream_%E2%80%93_The_Ride.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_%E2%80%93_The_Ride_01.jpg?width=800"
-    ]
+    ],
+    "emoji": "🎢",
+    "short": "Dream",
+    "tone": "#5a4020",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_The_Ride.jpg?width=800"
   },
   {
     "id": "minion",
@@ -445,7 +577,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/Despicable_Me_Minion_Mayhem_(Universal_Studios_Japan).jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Minion_Park_at_Universal_Studios_Japan.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Minion_Park_at_night.jpg?width=800"
-    ]
+    ],
+    "emoji": "🟡",
+    "short": "Minion",
+    "tone": "#4a3a6a",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Despicable_Me_Minion_Mayhem_(Universal_Studios_Japan).jpg?width=800"
   },
   {
     "id": "nintendo",
@@ -462,7 +598,11 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/Super_Nintendo_World_Entrance_5th_Anniversary_decoration_at_Universal_Studios_Japan.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Kinopio%27s_cafe_exterior_at_Super_Nintendo_World_(Universal_Studios_Japan).png?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Power_up_bands_at_Super_Nintendo_World_(Universal_Studios_Japan).png?width=800"
-    ]
+    ],
+    "emoji": "🍄",
+    "short": "Nintendo",
+    "tone": "#6a2830",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/Super_Nintendo_World_Entrance_5th_Anniversary_decoration_at_Universal_Studios_Japan.jpg?width=800"
   },
   {
     "id": "shows",
@@ -479,14 +619,34 @@ const PLACES = [
       "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter3_USJ.JPG?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=800",
       "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_by_night_USJ.JPG?width=800"
-    ]
+    ],
+    "emoji": "🎭",
+    "short": "Shows",
+    "tone": "#4a3a20",
+    "cover": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter3_USJ.JPG?width=800"
   }
 ];
 const byId = Object.fromEntries(PLACES.map(p => [p.id, p]));
+const ORDER = ['entrance','forbidden','hippogriff','hogsmeade','flying','jpride','jaws','dream','minion','nintendo','shows'];
+// Visual map layout: wide tiles for hero zones
+const TILE_LAYOUT = [
+  { id:'forbidden', wide:true, label:'Wizarding World', sub:'① Forbidden Journey' },
+  { id:'hippogriff', wide:false, label:'Hippogriff', sub:'② Flight' },
+  { id:'hogsmeade', wide:false, label:'Hogsmeade', sub:'③ Butterbeer' },
+  { id:'flying', wide:false, label:'Flying Dinosaur', sub:'④ Jurassic' },
+  { id:'jpride', wide:false, label:'JP The Ride', sub:'⑤ loď · mokré' },
+  { id:'jaws', wide:false, label:'JAWS', sub:'⑥ od 18:00' },
+  { id:'dream', wide:false, label:'Hollywood Dream', sub:'⑦ horská dráha' },
+  { id:'minion', wide:false, label:'Minion Mayhem', sub:'⑧ namiesto BTTF' },
+  { id:'nintendo', wide:false, label:'Nintendo World', sub:'časový lístok' },
+  { id:'shows', wide:false, label:'Shows / HHN', sub:'appka · večer' },
+  { id:'entrance', wide:true, label:'Vstup / CityWalk', sub:'obed · appka' },
+];
 
 const panel = document.getElementById('panel');
 const chips = document.getElementById('chips');
 const rides = document.getElementById('rides');
+const grid = document.getElementById('zone-grid');
 const lb = document.getElementById('lb');
 const lbImg = lb.querySelector('img');
 
@@ -497,39 +657,56 @@ function openLb(src, alt) {
 lb.addEventListener('click', e => { if (e.target === lb || e.target.id === 'lb-close') lb.classList.remove('open'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
 
+function setActive(id) {
+  document.querySelectorAll('.zone-tile,.chip').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === id);
+  });
+}
+
 function renderPanel(id) {
   const p = byId[id];
   if (!p) return;
-  document.querySelectorAll('.zone,.marker,.chip').forEach(el => {
-    el.classList.toggle('active', el.dataset.id === id);
-  });
+  setActive(id);
   panel.classList.remove('empty');
+  const cover = p.cover || p.photos[0];
   panel.innerHTML = `
-    <h3><span class="num">${p.num}</span>${p.name} <span class="badge ${p.diffClass}">${p.diff}</span></h3>
-    <div class="meta">${p.zone} · ${p.height} · ${p.dur}</div>
-    <p>${p.desc}</p>
-    <div class="tip"><strong>Tip:</strong> ${p.tip}</div>
-    <div class="gallery">${p.photos.map(u => `<img src="${u}" alt="${p.name}" loading="lazy" data-full="${u}">`).join('')}</div>
-  `;
+    <img class="hero-shot" src="${cover}" alt="${p.name}" data-full="${cover}">
+    <div class="body">
+      <h3><span class="num-inline">${p.num}</span>${p.name} <span class="badge ${p.diffClass}">${p.diff}</span></h3>
+      <p class="meta">${p.emoji} ${p.zone} · ${p.height} · ${p.dur}</p>
+      <p>${p.desc}</p>
+      <div class="tip"><strong>Tip:</strong> ${p.tip}</div>
+      <div class="gallery">${p.photos.map(u => `<img src="${u}" alt="${p.name}" loading="lazy" data-full="${u}">`).join('')}</div>
+    </div>`;
   panel.querySelectorAll('img').forEach(img => {
-    img.addEventListener('click', () => openLb(img.dataset.full, img.alt));
+    img.addEventListener('click', () => openLb(img.dataset.full || img.src, img.alt));
   });
   panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
-function bindMap() {
-  document.querySelectorAll('.zone,.marker').forEach(el => {
-    const go = () => renderPanel(el.dataset.id);
-    el.addEventListener('click', go);
-    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+function renderGrid() {
+  grid.innerHTML = TILE_LAYOUT.map(t => {
+    const p = byId[t.id];
+    const cls = t.wide ? 'zone-tile wide' : 'zone-tile';
+    return `<button type="button" class="${cls}" data-id="${t.id}" aria-label="${t.label}">
+      <img src="${p.cover}" alt="" loading="lazy">
+      <span class="shade"></span>
+      <span class="zone-num">${p.num}</span>
+      <span class="content">
+        <span class="label">${t.label}</span>
+        <span class="sublabel">${t.sub}</span>
+      </span>
+    </button>`;
+  }).join('');
+  grid.querySelectorAll('.zone-tile').forEach(btn => {
+    btn.addEventListener('click', () => renderPanel(btn.dataset.id));
   });
 }
 
 function renderChips() {
-  const order = ['entrance','forbidden','hippogriff','hogsmeade','flying','jpride','jaws','dream','minion','nintendo','shows'];
-  chips.innerHTML = order.map(id => {
+  chips.innerHTML = ORDER.map(id => {
     const p = byId[id];
-    return `<button type="button" class="chip" data-id="${id}">${p.num} ${p.name.split('·')[0].trim().split(' ')[0]}</button>`;
+    return `<button type="button" class="chip" data-id="${id}"><span class="n">${p.num}</span>${p.emoji} ${p.short}</button>`;
   }).join('');
   chips.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => renderPanel(c.dataset.id)));
 }
@@ -538,18 +715,19 @@ function renderRides() {
   const main = ['forbidden','hippogriff','hogsmeade','flying','jpride','jaws','dream','minion','entrance'];
   rides.innerHTML = main.map(id => {
     const p = byId[id];
-    const imgs = p.photos.slice(0,3);
-    while (imgs.length < 3) imgs.push(imgs[imgs.length-1]);
+    const rest = p.photos.slice(1,3);
+    while (rest.length < 2) rest.push(p.photos[0]);
     return `<article class="ride" id="r-${id}">
-      <div class="gal">
-        ${imgs.map(u => `<img src="${u}" alt="${p.name}" loading="lazy" class="lb" data-full="${u}">`).join('')}
+      <img class="cover lb" src="${p.cover}" alt="${p.name}" loading="lazy" data-full="${p.cover}">
+      <div class="thumbs">
+        ${rest.map(u => `<img src="${u}" alt="" loading="lazy" class="lb" data-full="${u}">`).join('')}
       </div>
       <div class="body">
-        <h3><span class="num">${p.num}</span>${p.name} <span class="badge ${p.diffClass}">${p.diff}</span></h3>
+        <h3><span class="num-inline">${p.num}</span>${p.name} <span class="badge ${p.diffClass}">${p.diff}</span></h3>
         <p class="meta">${p.height} · ${p.dur} · ${p.zone}</p>
         <p>${p.desc}</p>
         <div class="tip"><strong>Tip:</strong> ${p.tip}</div>
-        <p style="margin:8px 0 0"><button type="button" class="chip" data-map="${id}">Ukáž na mape</button></p>
+        <button type="button" class="btn-map" data-map="${id}">Ukáž na mape</button>
       </div>
     </article>`;
   }).join('');
@@ -566,10 +744,9 @@ function renderRides() {
   });
 }
 
-bindMap();
+renderGrid();
 renderChips();
 renderRides();
-// default open Harry Potter
 renderPanel('forbidden');
 </script>
 </body>
