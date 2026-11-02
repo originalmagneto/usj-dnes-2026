@@ -2,180 +2,155 @@
 <html lang="sk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>USJ dnes – Harry Potter, Jurský park, JAWS</title>
-<meta name="description" content="Krátky sprievodca Universal Studios Japan – 2. 11. 2026">
+<meta name="description" content="Interaktívny sprievodca Universal Studios Japan – 2. 11. 2026">
 <style>
+:root {
+  --bg:#0f1419; --card:#1a222c; --card2:#232d3a; --text:#eef2f6; --muted:#9aa8b5;
+  --accent:#5eb3f0; --accent2:#f0b35e; --good:#6bcf8e; --warn:#f0a060; --hot:#f07178;
+  --line:#2c3848; --radius:14px; --hl:#5eb3f0;
+}
+@media (prefers-color-scheme: light) {
   :root {
-    --bg: #0f1419;
-    --card: #1a222c;
-    --card2: #232d3a;
-    --text: #eef2f6;
-    --muted: #9aa8b5;
-    --accent: #5eb3f0;
-    --accent2: #f0b35e;
-    --good: #6bcf8e;
-    --warn: #f0a060;
-    --hot: #f07178;
-    --line: #2c3848;
-    --radius: 14px;
+    --bg:#f4f6f8; --card:#fff; --card2:#eef2f6; --text:#15202b; --muted:#5b6b7a;
+    --accent:#1a7bbf; --accent2:#b87514; --good:#1f8a4c; --warn:#b85c12; --hot:#c2303a;
+    --line:#d5dde6; --hl:#1a7bbf;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f4f6f8;
-      --card: #ffffff;
-      --card2: #eef2f6;
-      --text: #15202b;
-      --muted: #5b6b7a;
-      --accent: #1a7bbf;
-      --accent2: #b87514;
-      --good: #1f8a4c;
-      --warn: #b85c12;
-      --hot: #c2303a;
-      --line: #d5dde6;
-    }
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.45;
-    font-size: 16px;
-  }
-  .wrap { max-width: 720px; margin: 0 auto; padding: 16px 14px 48px; }
-  header {
-    background: linear-gradient(145deg, #1e3a5f 0%, #0f1419 70%);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 20px 18px;
-    margin-bottom: 16px;
-  }
-  @media (prefers-color-scheme: light) {
-    header { background: linear-gradient(145deg, #d6e8f8 0%, #ffffff 70%); }
-  }
-  h1 { margin: 0 0 6px; font-size: 1.45rem; letter-spacing: -0.02em; }
-  .sub { color: var(--muted); font-size: 0.92rem; margin: 0; }
-  h2 {
-    font-size: 1.12rem;
-    margin: 22px 0 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--line);
-  }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 14px;
-    margin-bottom: 12px;
-  }
-  ol.postup { margin: 0; padding-left: 1.2rem; }
-  ol.postup li { margin: 0.45rem 0; }
-  .badge {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 999px;
-    vertical-align: middle;
-  }
-  .d-nizka { background: color-mix(in srgb, var(--good) 22%, transparent); color: var(--good); }
-  .d-stred { background: color-mix(in srgb, var(--accent2) 22%, transparent); color: var(--accent2); }
-  .d-vysoka { background: color-mix(in srgb, var(--warn) 25%, transparent); color: var(--warn); }
-  .d-extreme { background: color-mix(in srgb, var(--hot) 25%, transparent); color: var(--hot); }
-  .meta { color: var(--muted); font-size: 0.88rem; margin: 6px 0; }
-  .tip {
-    background: var(--card2);
-    border-left: 3px solid var(--accent);
-    padding: 8px 10px;
-    margin-top: 8px;
-    border-radius: 0 8px 8px 0;
-    font-size: 0.92rem;
-  }
-  .ride {
-    display: grid;
-    gap: 10px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-  .ride img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    display: block;
-    background: var(--card2);
-  }
-  .ride .body { padding: 12px 14px 14px; }
-  .ride h3 { margin: 0 0 4px; font-size: 1.05rem; }
-  .num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5rem; height: 1.5rem;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #041018;
-    font-weight: 800;
-    font-size: 0.85rem;
-    margin-right: 6px;
-  }
-  .map-wrap {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 10px;
-    overflow: auto;
-  }
-  .map-wrap svg { width: 100%; height: auto; display: block; min-width: 300px; }
-  .legend { font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
-  .legend strong { color: var(--text); }
-  ul.tips { margin: 0; padding-left: 1.15rem; }
-  ul.tips li { margin: 0.4rem 0; }
-  .note {
-    border: 1px dashed var(--warn);
-    background: color-mix(in srgb, var(--warn) 10%, var(--card));
-    border-radius: var(--radius);
-    padding: 12px 14px;
-    margin: 12px 0;
-  }
-  footer {
-    margin-top: 28px;
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 0.78rem;
-  }
-  a { color: var(--accent); }
-  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .toc a {
-    text-decoration: none;
-    background: var(--card2);
-    border: 1px solid var(--line);
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.82rem;
-    color: var(--text);
-  }
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.45; font-size:16px;
+}
+.wrap { max-width:760px; margin:0 auto; padding:14px 12px 56px; }
+header {
+  background:linear-gradient(145deg,#1e3a5f 0%,#0f1419 70%);
+  border:1px solid var(--line); border-radius:var(--radius); padding:18px 16px; margin-bottom:12px;
+}
+@media (prefers-color-scheme: light) {
+  header { background:linear-gradient(145deg,#d6e8f8 0%,#fff 70%); }
+}
+h1 { margin:0 0 6px; font-size:1.4rem; letter-spacing:-0.02em; }
+.sub { color:var(--muted); font-size:.9rem; margin:0; }
+.toc { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.toc a {
+  text-decoration:none; background:var(--card2); border:1px solid var(--line);
+  padding:6px 10px; border-radius:999px; font-size:.82rem; color:var(--text);
+}
+h2 {
+  font-size:1.1rem; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line);
+}
+.card {
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:14px; margin-bottom:12px;
+}
+ol.postup { margin:0; padding-left:1.2rem; }
+ol.postup li { margin:.4rem 0; }
+.badge {
+  display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.03em;
+  text-transform:uppercase; padding:3px 8px; border-radius:999px; vertical-align:middle;
+}
+.d-nizka { background:color-mix(in srgb,var(--good) 22%,transparent); color:var(--good); }
+.d-stred { background:color-mix(in srgb,var(--accent2) 22%,transparent); color:var(--accent2); }
+.d-vysoka { background:color-mix(in srgb,var(--warn) 25%,transparent); color:var(--warn); }
+.d-extreme { background:color-mix(in srgb,var(--hot) 25%,transparent); color:var(--hot); }
+.map-shell {
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:10px; margin-bottom:10px;
+}
+.map-shell svg { width:100%; height:auto; display:block; touch-action:manipulation; }
+.zone { cursor:pointer; transition:opacity .15s, filter .15s; }
+.zone:hover, .zone:focus { filter:brightness(1.12); outline:none; }
+.zone.active { filter:brightness(1.2) saturate(1.15); stroke-width:2.5px; }
+.marker { cursor:pointer; }
+.marker circle { transition: r .15s, fill .15s; }
+.marker.active circle { fill:#fff; stroke:var(--hl); stroke-width:3; }
+.marker text { pointer-events:none; font-family:sans-serif; font-weight:700; }
+.hint { color:var(--muted); font-size:.85rem; margin:8px 0 0; }
+#panel {
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:14px; min-height:120px; margin-bottom:14px;
+  border-top:3px solid var(--accent);
+}
+#panel.empty { color:var(--muted); border-top-color:var(--line); }
+#panel h3 { margin:0 0 6px; font-size:1.08rem; }
+#panel .meta { color:var(--muted); font-size:.88rem; margin:4px 0 8px; }
+#panel .tip {
+  background:var(--card2); border-left:3px solid var(--accent); padding:8px 10px;
+  margin-top:8px; border-radius:0 8px 8px 0; font-size:.92rem;
+}
+.gallery {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px;
+}
+.gallery img {
+  width:100%; height:88px; object-fit:cover; border-radius:8px; background:var(--card2);
+  cursor:pointer;
+}
+@media (min-width:520px) {
+  .gallery img { height:110px; }
+}
+.lightbox {
+  position:fixed; inset:0; background:rgba(0,0,0,.88); display:none;
+  align-items:center; justify-content:center; z-index:50; padding:16px;
+}
+.lightbox.open { display:flex; }
+.lightbox img { max-width:100%; max-height:90vh; border-radius:8px; }
+.lightbox button {
+  position:absolute; top:12px; right:12px; background:var(--card); color:var(--text);
+  border:1px solid var(--line); border-radius:999px; width:40px; height:40px; font-size:1.2rem;
+}
+.ride {
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  overflow:hidden; margin-bottom:12px;
+}
+.ride .gal {
+  display:grid; grid-template-columns:2fr 1fr; grid-template-rows:1fr 1fr; gap:4px; height:200px;
+}
+.ride .gal img { width:100%; height:100%; object-fit:cover; display:block; background:var(--card2); cursor:pointer; }
+.ride .gal img:first-child { grid-row:1 / span 2; }
+.ride .body { padding:12px 14px 14px; }
+.ride h3 { margin:0 0 4px; font-size:1.05rem; }
+.num {
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:1.5rem; height:1.5rem; padding:0 6px; border-radius:999px;
+  background:var(--accent); color:#041018; font-weight:800; font-size:.85rem; margin-right:6px;
+}
+.meta { color:var(--muted); font-size:.88rem; margin:6px 0; }
+.tip {
+  background:var(--card2); border-left:3px solid var(--accent); padding:8px 10px;
+  margin-top:8px; border-radius:0 8px 8px 0; font-size:.92rem;
+}
+.note {
+  border:1px dashed var(--warn); background:color-mix(in srgb,var(--warn) 10%,var(--card));
+  border-radius:var(--radius); padding:12px 14px; margin:12px 0;
+}
+ul.tips { margin:0; padding-left:1.15rem; }
+ul.tips li { margin:.4rem 0; }
+.chiprow { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 0; }
+.chip {
+  border:1px solid var(--line); background:var(--card2); color:var(--text);
+  border-radius:999px; padding:6px 10px; font-size:.8rem; cursor:pointer;
+}
+.chip.active { border-color:var(--accent); color:var(--accent); }
+a { color:var(--accent); }
+footer {
+  margin-top:24px; padding-top:14px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:.78rem;
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>USJ dnes – Harry Potter, Jurský park, JAWS</h1>
-    <p class="sub">2. 11. 2026 · Universal Studios Japan · bez Express Passu · park 8:00–22:00</p>
+    <p class="sub">2. 11. 2026 · Universal Studios Japan · bez Express Passu · 8:00–22:00 · interaktívna mapa</p>
     <nav class="toc">
       <a href="#postup">Postup</a>
       <a href="#mapa">Mapa</a>
-      <a href="#hp">Harry Potter</a>
-      <a href="#jp">Jurský park</a>
-      <a href="#dalsie">Ďalšie</a>
+      <a href="#atrakcie">Atrakcie</a>
+      <a href="#shows">Shows</a>
       <a href="#tipy">Tipy</a>
     </nav>
   </header>
@@ -183,189 +158,417 @@
   <section id="postup" class="card">
     <h2 style="margin-top:0;border:0;padding:0">Krátky postup</h2>
     <ol class="postup">
-      <li><strong>Odchod ~11:30</strong> z Tsuruhashi → JR Osaka Loop → <strong>Nishikujō</strong> → JR Yumesaki Line → <strong>Universal City</strong> (~35–40 min). Od stanice 5 min pešo na bránu (~12:15).</li>
-      <li>Park dnes <strong>8:00–22:00</strong>. Očakávaj plno (Halloween Horror Nights do 8. 11.).</li>
-      <li><strong>Hneď po vstupe:</strong> otvor appku USJ, zaregistruj Studio Passy a skús <strong>časový lístok do Super Nintendo World</strong>. Bez Express Passu inak len lotéria (Standby Entry).</li>
-      <li><strong>Obed</strong> mimo špičky 11:30–13:30 (CityWalk pred vstupom, alebo až po 13:30 vnútri).</li>
-      <li>Poradie: <strong>Harry Potter → Jurský park → večer JAWS od 18:00</strong> → Hollywood Dream.</li>
-      <li><strong>Zajtra 3. 11.:</strong> checkout Airbnb Osaka do 11:00 — nevracajte sa príliš neskoro.</li>
+      <li><strong>Odchod ~11:30</strong> z Tsuruhashi → JR Osaka Loop → <strong>Nishikujō</strong> → JR Yumesaki → <strong>Universal City</strong> (~35–40 min) → brána ~12:15.</li>
+      <li><strong>Hneď po vstupe:</strong> appka USJ + časový lístok Super Nintendo World (bez Express Passu inak lotéria).</li>
+      <li><strong>Obed</strong> mimo 11:30–13:30 (CityWalk alebo neskôr vnútri).</li>
+      <li>Poradie: <strong>Harry Potter → Jurský park → JAWS od 18:00</strong> → Hollywood Dream.</li>
+      <li><strong>Zajtra 3. 11.:</strong> checkout Osaka do 11:00.</li>
     </ol>
   </section>
 
-  <h2 id="mapa">Schematická mapa parku</h2>
-  <div class="map-wrap">
-    <svg viewBox="0 0 360 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematická mapa zón USJ">
-      <rect width="360" height="420" fill="#121820"/>
-      <!-- zones -->
-      <rect x="20" y="350" width="320" height="50" rx="8" fill="#2a3544" stroke="#4a5a70"/>
-      <text x="180" y="380" fill="#cfd8e3" font-size="13" text-anchor="middle" font-family="sans-serif">VSTUP / CityWalk</text>
-
-      <rect x="20" y="280" width="150" height="60" rx="8" fill="#3a2f1f" stroke="#8a7040"/>
-      <text x="95" y="305" fill="#f0d9a8" font-size="12" text-anchor="middle" font-family="sans-serif">Hollywood</text>
-      <text x="95" y="322" fill="#f0b35e" font-size="11" text-anchor="middle" font-family="sans-serif">⑦ Dream</text>
-
-      <rect x="185" y="280" width="155" height="60" rx="8" fill="#1f2f3a" stroke="#4a708a"/>
-      <text x="262" y="315" fill="#b8d4e8" font-size="12" text-anchor="middle" font-family="sans-serif">New York</text>
-
-      <rect x="20" y="200" width="110" height="70" rx="8" fill="#1f3a2a" stroke="#4a8a60"/>
-      <text x="75" y="228" fill="#b8e8c8" font-size="11" text-anchor="middle" font-family="sans-serif">San Francisco</text>
-      <text x="75" y="248" fill="#9aa8b5" font-size="10" text-anchor="middle" font-family="sans-serif">/ Amity</text>
-
-      <rect x="140" y="200" width="100" height="70" rx="8" fill="#1a2a3a" stroke="#3a6a9a"/>
-      <text x="190" y="230" fill="#a8c8e8" font-size="11" text-anchor="middle" font-family="sans-serif">Amity</text>
-      <text x="190" y="248" fill="#5eb3f0" font-size="12" text-anchor="middle" font-family="sans-serif">⑥ JAWS</text>
-
-      <rect x="250" y="200" width="90" height="70" rx="8" fill="#3a2a1a" stroke="#8a6040"/>
-      <text x="295" y="240" fill="#e8c8a8" font-size="11" text-anchor="middle" font-family="sans-serif">Waterworld</text>
-
-      <rect x="20" y="110" width="155" height="80" rx="8" fill="#2a3a1a" stroke="#6a8a40"/>
-      <text x="97" y="140" fill="#d0e8a8" font-size="12" text-anchor="middle" font-family="sans-serif">Jurassic Park</text>
-      <text x="97" y="160" fill="#6bcf8e" font-size="11" text-anchor="middle" font-family="sans-serif">④ Flying Dino</text>
-      <text x="97" y="176" fill="#6bcf8e" font-size="11" text-anchor="middle" font-family="sans-serif">⑤ JP Ride</text>
-
-      <rect x="185" y="110" width="155" height="80" rx="8" fill="#2a1f3a" stroke="#6a4a8a"/>
-      <text x="262" y="140" fill="#d8c8f0" font-size="11" text-anchor="middle" font-family="sans-serif">Minion Park</text>
-      <text x="262" y="162" fill="#c9a0f0" font-size="11" text-anchor="middle" font-family="sans-serif">⑧ Minion Mayhem</text>
-
-      <rect x="20" y="20" width="200" height="80" rx="8" fill="#1a2740" stroke="#5a7aaa"/>
-      <text x="120" y="48" fill="#c8daf0" font-size="11" text-anchor="middle" font-family="sans-serif">Wizarding World</text>
-      <text x="120" y="66" fill="#5eb3f0" font-size="11" text-anchor="middle" font-family="sans-serif">① Forbidden · ② Hippogriff</text>
-      <text x="120" y="82" fill="#9aa8b5" font-size="10" text-anchor="middle" font-family="sans-serif">③ Walk / Ollivanders</text>
-
-      <rect x="230" y="20" width="110" height="80" rx="8" fill="#3a1a1a" stroke="#8a4040"/>
-      <text x="285" y="55" fill="#f0c0c0" font-size="11" text-anchor="middle" font-family="sans-serif">Super</text>
-      <text x="285" y="72" fill="#f0c0c0" font-size="11" text-anchor="middle" font-family="sans-serif">Nintendo</text>
-
-      <!-- markers -->
-      <circle cx="70" cy="55" r="10" fill="#5eb3f0"/><text x="70" y="59" text-anchor="middle" font-size="11" font-weight="700" fill="#041018" font-family="sans-serif">1</text>
-      <circle cx="150" cy="55" r="10" fill="#5eb3f0"/><text x="150" y="59" text-anchor="middle" font-size="11" font-weight="700" fill="#041018" font-family="sans-serif">2</text>
-      <circle cx="55" cy="155" r="10" fill="#6bcf8e"/><text x="55" y="159" text-anchor="middle" font-size="11" font-weight="700" fill="#041018" font-family="sans-serif">4</text>
-      <circle cx="130" cy="155" r="10" fill="#6bcf8e"/><text x="130" y="159" text-anchor="middle" font-size="11" font-weight="700" fill="#041018" font-family="sans-serif">5</text>
-      <circle cx="190" cy="235" r="10" fill="#5eb3f0"/><text x="190" y="239" text-anchor="middle" font-size="11" font-weight="700" fill="#041018" font-family="sans-serif">6</text>
-      <circle cx="95" cy="300" r="10" fill="#f0b35e"/><text x="95" y="304" text-anchor="middle" font-size="11" font-weight="700" fill="#041018" font-family="sans-serif">7</text>
-      <circle cx="262" cy="155" r="10" fill="#c9a0f0"/><text x="262" y="159" text-anchor="middle" font-size="11" font-weight="700" fill="#041018" font-family="sans-serif">8</text>
+  <h2 id="mapa">Interaktívna mapa</h2>
+  <p class="hint" style="margin-top:0">Ťukni na zónu alebo číslo — dole sa otvorí popis, tip a fotky.</p>
+  <div class="map-shell">
+    <svg id="usj-map" viewBox="0 0 360 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interaktívna mapa USJ">
+      <rect width="360" height="430" fill="#121820"/>
+      <!-- Entrance -->
+      <g class="zone" data-id="entrance" tabindex="0" role="button" aria-label="Vstup CityWalk">
+        <rect x="20" y="360" width="320" height="50" rx="8" fill="#2a3544" stroke="#4a5a70"/>
+        <text x="180" y="390" fill="#cfd8e3" font-size="13" text-anchor="middle" font-family="sans-serif">VSTUP / CityWalk</text>
+      </g>
+      <!-- Hollywood -->
+      <g class="zone" data-id="dream" tabindex="0" role="button" aria-label="Hollywood Dream">
+        <rect x="20" y="290" width="150" height="60" rx="8" fill="#3a2f1f" stroke="#8a7040"/>
+        <text x="95" y="316" fill="#f0d9a8" font-size="12" text-anchor="middle" font-family="sans-serif">Hollywood</text>
+        <text x="95" y="334" fill="#f0b35e" font-size="11" text-anchor="middle" font-family="sans-serif">⑦ Dream</text>
+      </g>
+      <!-- New York (shows tip) -->
+      <g class="zone" data-id="shows" tabindex="0" role="button" aria-label="Shows">
+        <rect x="185" y="290" width="155" height="60" rx="8" fill="#1f2f3a" stroke="#4a708a"/>
+        <text x="262" y="316" fill="#b8d4e8" font-size="12" text-anchor="middle" font-family="sans-serif">New York</text>
+        <text x="262" y="334" fill="#9aa8b5" font-size="10" text-anchor="middle" font-family="sans-serif">S Shows / HHN</text>
+      </g>
+      <!-- San Francisco -->
+      <g class="zone" data-id="jaws" tabindex="0" role="button" aria-label="San Francisco Amity JAWS">
+        <rect x="20" y="210" width="110" height="70" rx="8" fill="#1f3a2a" stroke="#4a8a60"/>
+        <text x="75" y="240" fill="#b8e8c8" font-size="11" text-anchor="middle" font-family="sans-serif">San Francisco</text>
+        <text x="75" y="258" fill="#9aa8b5" font-size="10" text-anchor="middle" font-family="sans-serif">/ Amity</text>
+      </g>
+      <!-- Amity JAWS -->
+      <g class="zone" data-id="jaws" tabindex="0" role="button" aria-label="JAWS">
+        <rect x="140" y="210" width="100" height="70" rx="8" fill="#1a2a3a" stroke="#3a6a9a"/>
+        <text x="190" y="240" fill="#a8c8e8" font-size="11" text-anchor="middle" font-family="sans-serif">Amity</text>
+        <text x="190" y="258" fill="#5eb3f0" font-size="12" text-anchor="middle" font-family="sans-serif">⑥ JAWS</text>
+      </g>
+      <!-- Waterworld / shows -->
+      <g class="zone" data-id="shows" tabindex="0" role="button" aria-label="WaterWorld shows">
+        <rect x="250" y="210" width="90" height="70" rx="8" fill="#3a2a1a" stroke="#8a6040"/>
+        <text x="295" y="250" fill="#e8c8a8" font-size="11" text-anchor="middle" font-family="sans-serif">WaterWorld</text>
+      </g>
+      <!-- Jurassic -->
+      <g class="zone" data-id="flying" tabindex="0" role="button" aria-label="Jurassic Park">
+        <rect x="20" y="120" width="155" height="80" rx="8" fill="#2a3a1a" stroke="#6a8a40"/>
+        <text x="97" y="150" fill="#d0e8a8" font-size="12" text-anchor="middle" font-family="sans-serif">Jurassic Park</text>
+        <text x="97" y="170" fill="#6bcf8e" font-size="11" text-anchor="middle" font-family="sans-serif">④ Flying · ⑤ Ride</text>
+      </g>
+      <!-- Minion -->
+      <g class="zone" data-id="minion" tabindex="0" role="button" aria-label="Minion Park">
+        <rect x="185" y="120" width="155" height="80" rx="8" fill="#2a1f3a" stroke="#6a4a8a"/>
+        <text x="262" y="150" fill="#d8c8f0" font-size="11" text-anchor="middle" font-family="sans-serif">Minion Park</text>
+        <text x="262" y="172" fill="#c9a0f0" font-size="11" text-anchor="middle" font-family="sans-serif">⑧ Mayhem</text>
+      </g>
+      <!-- Wizarding -->
+      <g class="zone" data-id="forbidden" tabindex="0" role="button" aria-label="Wizarding World">
+        <rect x="20" y="25" width="200" height="85" rx="8" fill="#1a2740" stroke="#5a7aaa"/>
+        <text x="120" y="52" fill="#c8daf0" font-size="11" text-anchor="middle" font-family="sans-serif">Wizarding World</text>
+        <text x="120" y="72" fill="#5eb3f0" font-size="11" text-anchor="middle" font-family="sans-serif">① Forbidden · ② Hippogriff</text>
+        <text x="120" y="90" fill="#9aa8b5" font-size="10" text-anchor="middle" font-family="sans-serif">③ Hogsmeade / shows</text>
+      </g>
+      <!-- Nintendo -->
+      <g class="zone" data-id="nintendo" tabindex="0" role="button" aria-label="Super Nintendo World">
+        <rect x="230" y="25" width="110" height="85" rx="8" fill="#3a1a1a" stroke="#8a4040"/>
+        <text x="285" y="62" fill="#f0c0c0" font-size="11" text-anchor="middle" font-family="sans-serif">Super</text>
+        <text x="285" y="80" fill="#f0c0c0" font-size="11" text-anchor="middle" font-family="sans-serif">Nintendo</text>
+      </g>
+      <!-- Markers -->
+      <g class="marker" data-id="forbidden"><circle cx="55" cy="55" r="11" fill="#5eb3f0"/><text x="55" y="59" text-anchor="middle" font-size="11" fill="#041018">1</text></g>
+      <g class="marker" data-id="hippogriff"><circle cx="120" cy="55" r="11" fill="#5eb3f0"/><text x="120" y="59" text-anchor="middle" font-size="11" fill="#041018">2</text></g>
+      <g class="marker" data-id="hogsmeade"><circle cx="175" cy="90" r="11" fill="#5eb3f0"/><text x="175" y="94" text-anchor="middle" font-size="11" fill="#041018">3</text></g>
+      <g class="marker" data-id="flying"><circle cx="55" cy="165" r="11" fill="#6bcf8e"/><text x="55" y="169" text-anchor="middle" font-size="11" fill="#041018">4</text></g>
+      <g class="marker" data-id="jpride"><circle cx="130" cy="165" r="11" fill="#6bcf8e"/><text x="130" y="169" text-anchor="middle" font-size="11" fill="#041018">5</text></g>
+      <g class="marker" data-id="jaws"><circle cx="190" cy="245" r="11" fill="#5eb3f0"/><text x="190" y="249" text-anchor="middle" font-size="11" fill="#041018">6</text></g>
+      <g class="marker" data-id="dream"><circle cx="95" cy="310" r="11" fill="#f0b35e"/><text x="95" y="314" text-anchor="middle" font-size="11" fill="#041018">7</text></g>
+      <g class="marker" data-id="minion"><circle cx="262" cy="165" r="11" fill="#c9a0f0"/><text x="262" y="169" text-anchor="middle" font-size="11" fill="#041018">8</text></g>
+      <g class="marker" data-id="nintendo"><circle cx="285" cy="45" r="11" fill="#f07178"/><text x="285" y="49" text-anchor="middle" font-size="10" fill="#041018">N</text></g>
+      <g class="marker" data-id="entrance"><circle cx="40" cy="385" r="11" fill="#9aa8b5"/><text x="40" y="389" text-anchor="middle" font-size="10" fill="#041018">E</text></g>
+      <g class="marker" data-id="shows"><circle cx="320" cy="310" r="11" fill="#f0b35e"/><text x="320" y="314" text-anchor="middle" font-size="10" fill="#041018">S</text></g>
     </svg>
-    <p class="legend">Schéma zón (nie GPS mapa). Čísla = atrakcie nižšie. Nintendo World len s časovým lístkom / Expressom.</p>
+    <div class="chiprow" id="chips"></div>
+    <p class="hint">Schéma zón (nie GPS). Nintendo len s timed entry / Expressom.</p>
   </div>
 
-  <h2 id="hp">Harry Potter</h2>
+  <div id="panel" class="empty" aria-live="polite">Ťukni na mapu — tu sa ukáže atrakcia, tip a fotky.</div>
 
-  <article class="ride" id="r1">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Hogwarts_School_of_Witchcraft_and_Wizardry_in_Universal_Studios_Japan.jpg?width=960" alt="Hogwarts – Forbidden Journey, USJ" loading="lazy">
-    <div class="body">
-      <h3><span class="num">1</span>Forbidden Journey <span class="badge d-vysoka">stredná–vysoká</span></h3>
-      <p class="meta">122 cm+ · ~5 min · skrinky povinné</p>
-      <p>Hlavná jazda v Rokforte: sedíš v kresle, ktoré sa točí a „letí“ s Harrym okolo hradu — drak, dementori, 360° obraz. Silné na žalúdok, nie klasická horská dráha.</p>
-      <div class="tip"><strong>Tip:</strong> Choďte sem hneď po vstupe — rad býva kratší skôr popoludní než neskôr večer.</div>
-    </div>
-  </article>
-
-  <article class="ride" id="r2">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ_2024.jpg?width=960" alt="Flight of the Hippogriff, USJ" loading="lazy">
-    <div class="body">
-      <h3><span class="num">2</span>Flight of the Hippogriff <span class="badge d-stred">nízka–stredná</span></h3>
-      <p class="meta">122 cm (od 92 cm so sprievodom) · ~2 min</p>
-      <p>Krátka rodinná horská dráha okolo Hagridovej chalúpky. Prudké zákruty, ale mierna — dobrý „warm-up“ pred Forbidden Journey.</p>
-      <div class="tip"><strong>Tip:</strong> Skrinky tu nie sú; batohy držte pri sebe podľa inštrukcií personálu.</div>
-    </div>
-  </article>
-
-  <article class="ride" id="r3">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter10_USJ.JPG?width=960" alt="Hogsmeade a Hogwarts, USJ" loading="lazy">
-    <div class="body">
-      <h3><span class="num">3</span>Hogwarts Castle Walk <span class="badge d-nizka">žiadna</span></h3>
-      <p class="meta">Prechádzka hradom · bez jazdy · bez výšky</p>
-      <p>Voľná prehliadka interiérov Rokfortu — atmosféra, detaily, fotky. Ideálne, ak niekto z vás nejde na jazdu.</p>
-    </div>
-  </article>
-
-  <article class="ride">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter_-_Ollivanders_USJ.JPG?width=960" alt="Ollivanders, USJ" loading="lazy">
-    <div class="body">
-      <h3>Ollivanders <span class="badge d-nizka">žiadna</span></h3>
-      <p class="meta">Krátka scénka · rad sa hýbe</p>
-      <p>Obchod s prútikmi: jedna osoba zo skupiny dostane „výber“ prútika. Pekné na fotku a atmosféru Hogsmeade.</p>
-      <div class="tip"><strong>Tip:</strong> Butterbeer (mrazený alebo klasický) a prechádzka Hogsmeade — Three Broomsticks, Honeydukes. Show v uliciach podľa appky (Frog Choir, Triwizard…).</div>
-    </div>
-  </article>
-
-  <h2 id="jp">Jurský park</h2>
-
-  <article class="ride" id="r4">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_3.jpg?width=960" alt="The Flying Dinosaur, USJ" loading="lazy">
-    <div class="body">
-      <h3><span class="num">4</span>The Flying Dinosaur <span class="badge d-extreme">veľmi vysoká</span></h3>
-      <p class="meta">132–198 cm · ~3 min · detektor kovov + skrinky</p>
-      <p>Visíš tvárou k zemi pod pteranodonom, 360° otočky ponad Jurský park. Najdivokejšia horská dráha v USJ — len pre silné žalúdky.</p>
-      <div class="tip"><strong>Tip:</strong> Všetko z vreciek do skrinky. Over výšku a aktuálny rad v appke pred radom.</div>
-    </div>
-  </article>
-
-  <article class="ride" id="r5">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_(Universal_Studios_Japan).jpg?width=960" alt="Jurassic Park The Ride, USJ" loading="lazy">
-    <div class="body">
-      <h3><span class="num">5</span>Jurassic Park – The Ride <span class="badge d-stred">stredná</span></h3>
-      <p class="meta">122 cm (107 cm so sprievodom) · ~7 min · <strong>zmoknete</strong></p>
-      <p>Loď cez džungľu s dinosaury a pád z ~26 m pred T-Rexom. Do 8. 11. niekedy verzia <em>In the Dark</em> (v tme). Pršiplášť sa oplatí.</p>
-      <div class="tip"><strong>Tip:</strong> Flying Dinosaur a táto jazda sú blízko seba — urobte ich za sebou.</div>
-    </div>
-  </article>
-
-  <h2 id="dalsie">Ďalšie atrakcie</h2>
-
-  <article class="ride" id="r6">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_03.jpg?width=960" alt="JAWS, Amity Village, USJ" loading="lazy">
-    <div class="body">
-      <h3><span class="num">6</span>JAWS · Red Alert <span class="badge d-nizka">nízka</span></h3>
-      <p class="meta">Dnes od <strong>18:00</strong> · ~7 min · trochu mokrá</p>
-      <p>Loď v Amity Village so žralokom. Výročná verzia Red Alert: stmavená, hmla, červená voda — strašidelnejšia než bežná, stále mierna.</p>
-      <div class="tip"><strong>Tip:</strong> Nechajte na večer. Pred radom skontrolujte v appke, či už jazdí a koľko sa čaká.</div>
-    </div>
-  </article>
-
-  <article class="ride" id="r7">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_The_Ride.jpg?width=960" alt="Hollywood Dream The Ride, USJ" loading="lazy">
-    <div class="body">
-      <h3><span class="num">7</span>Hollywood Dream (+ Backdrop) <span class="badge d-vysoka">vysoká</span></h3>
-      <p class="meta">132 cm+ · ~3 min · hudba v slúchadlách sedej</p>
-      <p>Rýchla horská dráha ponad Hollywood s vlastným soundtrackom. Verzia <strong>Backdrop</strong> ide dozadu — ešte náročnejšia.</p>
-      <div class="tip"><strong>Tip:</strong> Večer pred zatvorením bývajú rady kratšie. Backdrop len ak zvládnete Dream dopredu.</div>
-    </div>
-  </article>
-
-  <article class="ride" id="r8">
-    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Despicable_Me_Minion_Mayhem_(Universal_Studios_Japan).jpg?width=960" alt="Minion Mayhem, USJ" loading="lazy">
-    <div class="body">
-      <h3><span class="num">8</span>Minion Mayhem <span class="badge d-nizka">nízka–stredná</span></h3>
-      <p class="meta">Simulátor · Minion Park · pre väčšinu ľudí OK</p>
-      <p>Sedíte vo vozidle pred veľkým plátnom, Minioni, pohyb + 3D. Zábavné, nie extrémne — dobrá pauza medzi horskými dráhami.</p>
-    </div>
-  </article>
+  <h2 id="atrakcie">Atrakcie s fotkami</h2>
+  <div id="rides"></div>
 
   <div class="note">
-    <strong>Back to the Future už nie je.</strong> Jazda BTTF v USJ skončila v <strong>máji 2016</strong>. Na jej mieste je dnes <strong>Minion Mayhem</strong> (podobný typ simulátora). Historická fotka starej atrakcie:
+    <strong>Back to the Future už nie je.</strong> Jazda BTTF skončila v <strong>máji 2016</strong>. Nahradil ju <strong>Minion Mayhem</strong>.
     <p style="margin:10px 0 0">
-      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Back_to_the_Future_The_Ride_in_Universal_Studios_Japan.jpg?width=640" alt="BTTF The Ride USJ (historická)" loading="lazy" style="width:100%;border-radius:10px;max-height:200px;object-fit:cover">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Back_to_the_Future_The_Ride_in_Universal_Studios_Japan.jpg?width=800" alt="BTTF The Ride USJ (historická)" loading="lazy" style="width:100%;border-radius:10px;max-height:200px;object-fit:cover;cursor:pointer" class="lb">
     </p>
+  </div>
+
+  <h2 id="shows">Shows (dnes)</h2>
+  <div class="card">
+    <ul class="tips">
+      <li><strong>Wizarding World:</strong> Triwizard Spirit Rally, Frog Choir, Hippogriff Magical Lesson — časy v appke.</li>
+      <li><strong>WaterWorld:</strong> veľká vodná show (ak beží podľa dnešného rozvrhu v appke).</li>
+      <li><strong>Halloween Horror Nights (večer):</strong> scare zóny po parku. Nie je to detailný scare guide — kto nechce spook, sleduj appku a obíď označené zóny.</li>
+    </ul>
+    <p class="hint">Ťukni „S“ na mape pre fotky atmosféry HP / večer.</p>
   </div>
 
   <h2 id="tipy">Top tipy bez Express Passu</h2>
   <div class="card">
     <ul class="tips">
-      <li>Jeden telefón = jedna skupina v appke (rovnaký časový slot do Nintendo World).</li>
-      <li>Časový lístok Nintendo skús hneď za bránou; ak nie je → lotéria aspoň hodinu vopred (do 19:00).</li>
-      <li>Vždy pozeraj <strong>aktuálne rady v appke</strong>; Single Rider, ak atrakcia ponúka.</li>
-      <li>Pršiplášť: dážď dopoludnia + vodné jazdy (JP Ride, JAWS).</li>
-      <li>Po zotmení Horror Nights — zóny so zombíkmi sú v appke; obíďte ich, ak nechcete spook.</li>
-      <li>Navrhované poradie: HP → Jurassic → (Mario ak lístok) → JAWS od 18:00 → Dream.</li>
+      <li>Jeden telefón = jedna skupina v appke (rovnaký Nintendo slot).</li>
+      <li>Timed entry Nintendo hneď za bránou; inak lotéria ≥1 h vopred (do 19:00).</li>
+      <li>Rady vždy v appke; Single Rider, ak atrakcia ponúka.</li>
+      <li>Pršiplášť: dážď + JP Ride + JAWS.</li>
+      <li><strong>JAWS dnes od 18:00</strong> (Red Alert).</li>
+      <li>Horror Nights večer — podľa chuti.</li>
+      <li><strong>Zajtra checkout do 11:00</strong> — nevracajte sa neskoro.</li>
     </ul>
   </div>
 
   <footer>
-    Fotky: Wikimedia Commons (CC / public domain podľa jednotlivých súborov) — Hogwarts, Hippogriff, Hogsmeade, Ollivanders, Flying Dinosaur, Jurassic Park The Ride, JAWS, Hollywood Dream, Minion Mayhem, BTTF (historická).<br>
-    Výšky a časy: oficiálne údaje USJ (usj.co.jp). Hodnotenia náročnosti sú poradné, nie oficiálne.<br>
-    Sprievodca pre Majovu cestu 2. 11. 2026 · text + SVG fungujú offline; fotky potrebujú sieť.
+    Fotky: Wikimedia Commons. Výšky/časy: USJ oficiálne. Náročnosť je poradná.<br>
+    30 overených foto URL · text+SVG+JS offline; fotky potrebujú sieť.<br>
+    Sprievodca 2. 11. 2026 · <a href="https://originalmagneto.github.io/usj-dnes-2026/">GitHub Pages</a>
   </footer>
 </div>
+
+<div class="lightbox" id="lb" role="dialog" aria-modal="true"><button type="button" aria-label="Zavrieť" id="lb-close">×</button><img alt=""></div>
+
+<script>
+const PLACES = [
+  {
+    "id": "entrance",
+    "num": "E",
+    "name": "Vstup / CityWalk",
+    "zone": "Entrance",
+    "diff": "—",
+    "diffClass": "d-nizka",
+    "height": "—",
+    "dur": "—",
+    "desc": "Brána USJ a CityWalk pred vstupom. Od stanice Universal City asi 5 min pešo. Tu sa oplatí obed pred špičkou alebo rýchly snack.",
+    "tip": "Pred vstupom otvor appku USJ a priprav Studio Passy. Obed mimo 11:30–13:30 špičky — CityWalk je pohodlný.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/UNIVERSAL_STUDIOS_JAPAN_ENTRANCE.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/USJ_Entrance_-_2020-01-01.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/UNIVERSAL_STUDIOS_JAPAN_GATE.jpg?width=800"
+    ]
+  },
+  {
+    "id": "forbidden",
+    "num": "1",
+    "name": "Forbidden Journey",
+    "zone": "Wizarding World",
+    "diff": "stredná–vysoká",
+    "diffClass": "d-vysoka",
+    "height": "122 cm+",
+    "dur": "~5 min",
+    "desc": "Hlavná jazda v Rokforte: kreslo sa točí a „letí“ s Harrym — drak, dementori, 360° obraz. Silné na žalúdok.",
+    "tip": "Choďte sem hneď po vstupe. Skrinky povinné. Najlepší „wow“ moment HP zóny.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Hogwarts_School_of_Witchcraft_and_Wizardry_in_Universal_Studios_Japan.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_USJ.JPG?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_by_night_USJ.JPG?width=800"
+    ]
+  },
+  {
+    "id": "hippogriff",
+    "num": "2",
+    "name": "Flight of the Hippogriff",
+    "zone": "Wizarding World",
+    "diff": "nízka–stredná",
+    "diffClass": "d-stred",
+    "height": "122 cm (92 cm so sprievodom)",
+    "dur": "~2 min",
+    "desc": "Krátka rodinná horská dráha okolo Hagridovej chalúpky. Prudké zákruty, ale mierna.",
+    "tip": "Dobrý warm-up pred Forbidden Journey. Skrinky tu nie sú.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ_2024.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Flight_of_the_Hippogriff_USJ.JPG?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Hagrid%27s_Hut_at_Universal_Studios_Japan.jpg?width=800"
+    ]
+  },
+  {
+    "id": "hogsmeade",
+    "num": "3",
+    "name": "Hogsmeade · Butterbeer · Ollivanders",
+    "zone": "Wizarding World",
+    "diff": "žiadna",
+    "diffClass": "d-nizka",
+    "height": "—",
+    "dur": "voľné",
+    "desc": "Dedinka Hogsmeade, Castle Walk v Rokforte, Ollivanders (scénka s prútikom), Butterbeer a obchody.",
+    "tip": "Butterbeer (klasický alebo mrazený). Castle Walk bez jazdy. Ollivanders — rad sa hýbe.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_2.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter_-_Ollivanders_USJ.JPG?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter10_USJ.JPG?width=800"
+    ]
+  },
+  {
+    "id": "flying",
+    "num": "4",
+    "name": "The Flying Dinosaur",
+    "zone": "Jurassic Park",
+    "diff": "veľmi vysoká",
+    "diffClass": "d-extreme",
+    "height": "132–198 cm",
+    "dur": "~3 min",
+    "desc": "Visíš tvárou k zemi pod pteranodonom, 360° otočky. Najdivokejšia horská dráha v USJ.",
+    "tip": "Detektor kovov + skrinky. Len pre silné žalúdky. Blízko JP Ride.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_3.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Entrance_of_The_Flying_Dinosaur.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/The_Flying_Dinosaur_(Universal_Studios_Japan)_1.jpg?width=800"
+    ]
+  },
+  {
+    "id": "jpride",
+    "num": "5",
+    "name": "Jurassic Park – The Ride",
+    "zone": "Jurassic Park",
+    "diff": "stredná",
+    "diffClass": "d-stred",
+    "height": "122 cm (107 cm so sprievodom)",
+    "dur": "~7 min",
+    "desc": "Loď cez džungľu a pád z ~26 m pred T-Rexom. Do 8. 11. niekedy verzia In the Dark. Zmoknete.",
+    "tip": "Pršiplášť. Spojte s Flying Dinosaur — sú vedľa seba.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_(Universal_Studios_Japan).jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_The_Ride_at_Universal_Studios_Japan_5.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Jurassic_Park_(Universal_Studios_Japan).jpg?width=800"
+    ]
+  },
+  {
+    "id": "jaws",
+    "num": "6",
+    "name": "JAWS · Red Alert",
+    "zone": "Amity Village",
+    "diff": "nízka",
+    "diffClass": "d-nizka",
+    "height": "— (rodinná)",
+    "dur": "~7 min",
+    "desc": "Loď so žralokom v Amity. Dnes od 18:00 výročná Red Alert: stmavená, hmla, červená voda. Trochu mokrá.",
+    "tip": "Nechajte na večer po 18:00. Overte v appke, či už jazdí.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_03.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Jaws_at_Universal_Studios_Japan_07.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Amity_village_-_panoramio.jpg?width=800"
+    ]
+  },
+  {
+    "id": "dream",
+    "num": "7",
+    "name": "Hollywood Dream (+ Backdrop)",
+    "zone": "Hollywood",
+    "diff": "vysoká",
+    "diffClass": "d-vysoka",
+    "height": "132 cm+",
+    "dur": "~3 min",
+    "desc": "Rýchla horská dráha s hudbou v sedadle. Backdrop ide dozadu — ešte náročnejšia.",
+    "tip": "Večer pred zatvorením kratšie rady. Backdrop až po klasickom Dream.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_The_Ride.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Helix_of_Hollywood_Dream_%E2%80%93_The_Ride.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Hollywood_Dream_%E2%80%93_The_Ride_01.jpg?width=800"
+    ]
+  },
+  {
+    "id": "minion",
+    "num": "8",
+    "name": "Minion Mayhem",
+    "zone": "Minion Park",
+    "diff": "nízka–stredná",
+    "diffClass": "d-nizka",
+    "height": "podľa USJ (simulátor)",
+    "dur": "~5 min",
+    "desc": "Simulátor s Minionmi — nástupca Back to the Future (BTTF skončil máj 2016). Zábavné, nie extrémne.",
+    "tip": "Dobrá pauza medzi horskými dráhami. Minion Park je fajný na fotky.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Despicable_Me_Minion_Mayhem_(Universal_Studios_Japan).jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Minion_Park_at_Universal_Studios_Japan.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Minion_Park_at_night.jpg?width=800"
+    ]
+  },
+  {
+    "id": "nintendo",
+    "num": "N",
+    "name": "Super Nintendo World",
+    "zone": "Nintendo",
+    "diff": "rôzna",
+    "diffClass": "d-stred",
+    "height": "podľa atrakcie",
+    "dur": "časový slot",
+    "desc": "Mario Kart, Donkey Kong a zóna. Bez Express Passu so vstupom do Nintendo len s časovým lístkom z appky (alebo lotéria).",
+    "tip": "Hneď za bránou skús timed entry. Jeden telefón = celá skupina. Ak nie je → Standby Entry lotéria (≥1 h vopred, do 19:00).",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/USJ_Entrance_-_2020-01-01.jpg?width=800"
+    ]
+  },
+  {
+    "id": "shows",
+    "num": "S",
+    "name": "Shows & Horror Nights",
+    "zone": "Park-wide",
+    "diff": "—",
+    "diffClass": "d-nizka",
+    "height": "—",
+    "dur": "podľa appky",
+    "desc": "HP: Triwizard Spirit Rally, Frog Choir, Hippogriff Magical Lesson. WaterWorld (ak beží). Večer Halloween Horror Nights — zóny so scare actors.",
+    "tip": "Časy show vždy v appke. Horror Nights: kto sa nechce báť, obíď označené zóny v appke.",
+    "photos": [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/The_Wizarding_World_of_Harry_Potter3_USJ.JPG?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Hogsmeade_at_Universal_Studios_Japan_1.jpg?width=800",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Potter_and_the_Forbidden_Journey_by_night_USJ.JPG?width=800"
+    ]
+  }
+];
+const byId = Object.fromEntries(PLACES.map(p => [p.id, p]));
+
+const panel = document.getElementById('panel');
+const chips = document.getElementById('chips');
+const rides = document.getElementById('rides');
+const lb = document.getElementById('lb');
+const lbImg = lb.querySelector('img');
+
+function openLb(src, alt) {
+  lbImg.src = src; lbImg.alt = alt || '';
+  lb.classList.add('open');
+}
+lb.addEventListener('click', e => { if (e.target === lb || e.target.id === 'lb-close') lb.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
+
+function renderPanel(id) {
+  const p = byId[id];
+  if (!p) return;
+  document.querySelectorAll('.zone,.marker,.chip').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === id);
+  });
+  panel.classList.remove('empty');
+  panel.innerHTML = `
+    <h3><span class="num">${p.num}</span>${p.name} <span class="badge ${p.diffClass}">${p.diff}</span></h3>
+    <div class="meta">${p.zone} · ${p.height} · ${p.dur}</div>
+    <p>${p.desc}</p>
+    <div class="tip"><strong>Tip:</strong> ${p.tip}</div>
+    <div class="gallery">${p.photos.map(u => `<img src="${u}" alt="${p.name}" loading="lazy" data-full="${u}">`).join('')}</div>
+  `;
+  panel.querySelectorAll('img').forEach(img => {
+    img.addEventListener('click', () => openLb(img.dataset.full, img.alt));
+  });
+  panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function bindMap() {
+  document.querySelectorAll('.zone,.marker').forEach(el => {
+    const go = () => renderPanel(el.dataset.id);
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+}
+
+function renderChips() {
+  const order = ['entrance','forbidden','hippogriff','hogsmeade','flying','jpride','jaws','dream','minion','nintendo','shows'];
+  chips.innerHTML = order.map(id => {
+    const p = byId[id];
+    return `<button type="button" class="chip" data-id="${id}">${p.num} ${p.name.split('·')[0].trim().split(' ')[0]}</button>`;
+  }).join('');
+  chips.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => renderPanel(c.dataset.id)));
+}
+
+function renderRides() {
+  const main = ['forbidden','hippogriff','hogsmeade','flying','jpride','jaws','dream','minion','entrance'];
+  rides.innerHTML = main.map(id => {
+    const p = byId[id];
+    const imgs = p.photos.slice(0,3);
+    while (imgs.length < 3) imgs.push(imgs[imgs.length-1]);
+    return `<article class="ride" id="r-${id}">
+      <div class="gal">
+        ${imgs.map(u => `<img src="${u}" alt="${p.name}" loading="lazy" class="lb" data-full="${u}">`).join('')}
+      </div>
+      <div class="body">
+        <h3><span class="num">${p.num}</span>${p.name} <span class="badge ${p.diffClass}">${p.diff}</span></h3>
+        <p class="meta">${p.height} · ${p.dur} · ${p.zone}</p>
+        <p>${p.desc}</p>
+        <div class="tip"><strong>Tip:</strong> ${p.tip}</div>
+        <p style="margin:8px 0 0"><button type="button" class="chip" data-map="${id}">Ukáž na mape</button></p>
+      </div>
+    </article>`;
+  }).join('');
+  rides.querySelectorAll('img.lb').forEach(img => img.addEventListener('click', () => openLb(img.dataset.full || img.src, img.alt)));
+  rides.querySelectorAll('[data-map]').forEach(btn => btn.addEventListener('click', () => {
+    renderPanel(btn.dataset.map);
+    document.getElementById('mapa').scrollIntoView({behavior:'smooth'});
+  }));
+  document.querySelectorAll('img.lb').forEach(img => {
+    if (!img.dataset.bound) {
+      img.dataset.bound = '1';
+      img.addEventListener('click', () => openLb(img.src, img.alt));
+    }
+  });
+}
+
+bindMap();
+renderChips();
+renderRides();
+// default open Harry Potter
+renderPanel('forbidden');
+</script>
 </body>
 </html>
